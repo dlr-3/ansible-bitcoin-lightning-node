@@ -6,7 +6,6 @@
       - bitcoin_node_vars["enabled"]
       - bitcoin_node_vars["data_root"] is defined
       - bitcoin_node_vars["config_dir"] is defined
-      - bitcoin_node_vars["logging_dir"] is defined
       - bitcoin_node_vars["full_compile"] is defined
       - bitcoin_node_vars["update_systemd"] is defined
       - bitcoin_node_vars["node_rpc_username"] is defined
