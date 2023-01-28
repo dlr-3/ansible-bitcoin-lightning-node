@@ -21,7 +21,7 @@
 - name: block device reformat
   when:
     - bitcoin_node_vars["reformat_device"] | default(false) | bool
-    - bitcoin_node_vars["device_path"] | default(false) | bool
+    - bitcoin_node_vars["device_path"] | regex_search("^\/dev\/")
   include_tasks:
     file: reformat_block_device.yml
 
