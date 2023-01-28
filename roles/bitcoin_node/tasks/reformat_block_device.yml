@@ -13,7 +13,7 @@
   ansible.posix.mount:
     path: "{{ bitcoin_node_vars['data_root'] }}"
     state: unmounted
-=
+
 - name: Create a filesystem on bitcoin_node_vars.device_path
   community.general.filesystem:
     fstype: "{{ bitcoin_node_vars['filesystem'] }}"
