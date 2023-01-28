@@ -50,12 +50,12 @@
 
     - name: Execute autogen.sh and configure from bitcoin git repo, then make + make install (this takes a very long time!)
       shell:
-        cmd:
-          - "git checkout tags/{{ bitcoin_node_vars['bitcoin_git_tag'] }} && \
-             ./autogen.sh"
-          - "export BDB_PREFIX=\"{{ bitcoin_node_vars['code_dir'] }}/bitcoin/db4\" && \
-             ./configure.ac BDB_LIBS=\"-L${BDB_PREFIX}/lib -ldb_cxx-4.8\" BDB_CFLAGS=\"-I${BDB_PREFIX}/include\""
-          - "make; sudo make install"
+        cmd: "git checkout tags/{{ bitcoin_node_vars['bitcoin_git_tag'] }} && \
+              ./autogen.sh && \ 
+              export BDB_PREFIX=\"{{ bitcoin_node_vars['code_dir'] }}/bitcoin/db4\" && \
+              ./configure.ac BDB_LIBS=\"-L${BDB_PREFIX}/lib -ldb_cxx-4.8\" BDB_CFLAGS=\"-I${BDB_PREFIX}/include\" && \
+              make && \
+              sudo make install"
       args:
         chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
 
