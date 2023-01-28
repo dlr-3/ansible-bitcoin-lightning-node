@@ -1,7 +1,7 @@
 ---
 - name: Create bitcoin datadir
   file:
-    path: "{{ bitcoin_node_vars['data_dir'] }}"
+    path: "{{ bitcoin_node_vars['data_root'] }}"
     state: directory
     owner: "{{ linux_service_user }}"
     group: "{{ linux_service_user }}"
@@ -22,7 +22,7 @@
 - name: Mount bitcoin_node_vars.device_path by UUID
   ansible.posix.mount:
     src: "UUID={{ blkid_out.stdout }}"
-    path: "{{ bitcoin_node_vars['data_dir'] }}"
+    path: "{{ bitcoin_node_vars['data_root'] }}"
     fstype: "{{ bitcoin_node_vars['filesystem'] }}"
     opts: defaults
     state: mounted

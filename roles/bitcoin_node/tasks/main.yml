@@ -4,7 +4,7 @@
     fail_msg: "User_input.yml file corrupted and/or missing key information. Re-installing this repository is advised."
     that:
       - bitcoin_node_vars["enabled"]
-      - bitcoin_node_vars["data_dir"] is defined
+      - bitcoin_node_vars["data_root"] is defined
       - bitcoin_node_vars["config_dir"] is defined
       - bitcoin_node_vars["logging_dir"] is defined
       - bitcoin_node_vars["full_compile"] is defined
