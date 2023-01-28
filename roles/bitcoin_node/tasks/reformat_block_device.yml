@@ -21,6 +21,11 @@
     state: present
     force: True
 
+- name: Fetch the UUID of bitcoin_node_vars.device_path
+  register: blkid_out
+  changed_when: false
+  shell: "blkid -s UUID -o value {{ bitcoin_node_vars['device_path'] }}"
+
 - name: Mount bitcoin_node_vars.device_path by UUID
   ansible.posix.mount:
     src: "UUID={{ blkid_out.stdout }}"
@@ -28,8 +33,3 @@
     fstype: "{{ bitcoin_node_vars['filesystem'] }}"
     opts: defaults
     state: mounted
-
-- name: Fetch the UUID of bitcoin_node_vars.device_path
-  register: blkid_out
-  changed_when: false
-  shell: "blkid -s UUID -o value {{ bitcoin_node_vars['device_path'] }}"
