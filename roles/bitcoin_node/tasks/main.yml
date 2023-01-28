@@ -5,11 +5,12 @@
     that:
       - bitcoin_node_vars["enabled"]
       - bitcoin_node_vars["data_dir"] is defined
-      - bitcoin_node_vars["node_name"] is defined
       - bitcoin_node_vars["config_dir"] is defined
       - bitcoin_node_vars["logging_dir"] is defined
       - bitcoin_node_vars["full_compile"] is defined
       - bitcoin_node_vars["update_systemd"] is defined
+      - bitcoin_node_vars["node_rpc_username"] is defined
+      - bitcoin_node_vars["node_rpc_password"] is defined
 
 - name: Debian-type OS prerequisites and pre-flight checks
   when: ansible_os_family == "Debian"
