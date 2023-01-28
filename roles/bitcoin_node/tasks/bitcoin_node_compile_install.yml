@@ -48,13 +48,28 @@
         dest: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
         clone: True
 
+    - name: build the Berkeley DB v4.8 using make, register the output for configuration flags in the compile step
+      register: bdb_build_result
+      shell:
+        cmd: "make -C depends NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_NATPMP=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1"
+      args:
+        chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
+
+    - name: build select regex
+      set_fact:
+        bdb_path_regex: "'^to\:\ {{ bitcoin_node_vars['code_dir'] }}/depends/'"
+
+    - name: Extract BDB_PREFIX value from build result output
+      set_fact:
+        bdb_prefix: "{{ bdb_build_result.stdout_lines | select('match',bdb_path_regex) }}"
+
     - name: Execute autogen.sh and configure from bitcoin git repo, then make + make install (this takes a very long time!)
       shell:
         cmd: "git checkout tags/{{ bitcoin_node_vars['bitcoin_git_tag'] }} && \
               ./autogen.sh && \ 
-              export BDB_PREFIX=\"{{ bitcoin_node_vars['code_dir'] }}/bitcoin/db4\" && \
+              export BDB_PREFIX=\"{{ (bdb_prefix | split)[-1] }}\" && \
               ./configure BDB_LIBS=\"-L${BDB_PREFIX}/lib -ldb_cxx-4.8\" BDB_CFLAGS=\"-I${BDB_PREFIX}/include\" && \
-              make && \
+              make -C depends NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_NATPMP=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1 && \
               sudo make install"
       args:
         chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
