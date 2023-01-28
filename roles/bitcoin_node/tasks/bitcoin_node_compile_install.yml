@@ -15,8 +15,8 @@
     - { "path": "{{ bitcoin_node_vars['code_dir'] }}", "state": "directory" }
     - { "path": "{{ bitcoin_node_vars['config_dir'] }}", "state": "directory" }
     - { "path": "{{ bitcoin_node_vars['logging_dir'] }}", "state": "directory" }
-    - { "path": "{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf", "state": "file" }
-    - { "path": "{{ bitcoin_node_vars['logging_dir'] }}/debug.log", "state": "file" }
+    - { "path": "{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf", "state": "touch" }
+    - { "path": "{{ bitcoin_node_vars['logging_dir'] }}/debug.log", "state": "touch" }
 
 - name: block device reformat
   when:
