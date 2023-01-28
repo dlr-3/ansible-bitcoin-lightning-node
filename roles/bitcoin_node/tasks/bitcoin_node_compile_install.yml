@@ -9,7 +9,7 @@
   file:
     path: "{{ item.path }}"
     state: "{{ item.state }}"
-    user: "{{ linux_service_user }}"
+    owner: "{{ linux_service_user }}"
   loop:
     - { "path": "{{ bitcoin_node_vars['data_dir'] }}", "state": "directory" }
     - { "path": "{{ bitcoin_node_vars['code_dir'] }}", "state": "directory" }
