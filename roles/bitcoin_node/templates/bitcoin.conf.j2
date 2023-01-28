@@ -1,0 +1,12 @@
+#
+# bitcoin.conf
+
+assumevalid=0
+txindex=1
+rpcuser={{ bitcoin_node_vars['node_rpc_username'] }}
+rpcpassword={{ bitcoin_node_vars['node_rpc_password'] }}
+
+{% if lightning_node_vars['enabled'] %}
+zmqpubrawblock=tcp://127.0.0.1:28332
+zmqpubrawtx=tcp://127.0.0.1:28333
+{% endif %}

@@ -1,0 +1,11 @@
+---
+- hosts: bitcoin_nodes
+  vars_files:
+    - "{{ playbook_dir }}/user_input.yml"
+  become: True
+  tasks:
+
+    - name: Bitcoin node tasks
+      when: bitcoin_node_vars["enabled"] | default(False) | bool
+      include_role:
+        name: bitcoin_node

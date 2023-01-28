@@ -1,0 +1,27 @@
+---
+- name: Create bitcoin datadir
+  file:
+    path: "{{ bitcoin_node_vars['data_dir'] }}"
+    state: directory
+    owner: "{{ linux_service_user }}"
+    group: "{{ linux_service_user }}"
+    mode: '0751'
+
+- name: Create a filesystem on bitcoin_node_vars.device_path
+  community.general.filesystem:
+    fstype: "{{ bitcoin_node_vars['filesystem'] }}"
+    dev: "{{ bitcoin_node_vars['device_path'] }}"
+    state: present
+
+- name: Fetch the UUID of bitcoin_node_vars.device_path
+  register: blkid_out
+  changed_when: false
+  shell: "blkid -s UUID -o value {{ bitcoin_node_vars['device_path'] }}"
+
+- name: Mount bitcoin_node_vars.device_path by UUID
+  ansible.posix.mount:
+    src: "UUID={{ blkid_out.stdout }}"
+    path: "{{ bitcoin_node_vars['data_dir'] }}"
+    fstype: "{{ bitcoin_node_vars['filesystem'] }}"
+    opts: defaults
+    state: mounted

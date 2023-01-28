@@ -1,0 +1,23 @@
+---
+- name: bitcoin build dependencies dnf package install
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - git
+    - gcc-c++
+    - libtool
+    - make
+    - autoconf
+    - automake
+    - libevent-devel
+    - boost-devel
+    - libdb4-devel
+    - libdb4-cxx-devel
+    - python3-devel
+    - miniupnpc-devel
+    - zeromq-devel
+    - qt5-qttools-devel
+    - qt5-qtbase-devel
+    - qrencode-devel
+    - sqlite-devel

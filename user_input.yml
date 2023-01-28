@@ -1,0 +1,44 @@
+---
+# This file will work out of the box to install a bitcion node, but can be edited to each user's preferences.
+#
+
+# This user does NOT require root access, and will be the sole owner of all bitcoin/lightning related files
+linux_service_user: bitcoin
+
+# Configuration options for the bitcoin node
+# Existing bitcoin blockchain will be detected and reused if present in data_dir.
+# This software makes no attempt to delete BTC blockchain data, due to the long time required for recovering it via IBD
+# If you have an old/corrupt/partial blockchain and you wish to "start fresh" with a complete IBD procedure, consider
+# please consider manually removing the old blockchain data, or proceeding with the full reformat below.
+
+bitcoin_node_vars:
+  enabled: True
+  node_rpc_username: "NEW_USERNAME_HERE"
+  node_rpc_password: "NEW_PASSWORD_HERE"
+  update_systemd: True
+  full_compile: True
+  bitcoin_git_tag: "v24.0.1"
+  data_dir: /bitcoin
+  logging_dir: /bitcoin/logs
+  code_dir: /home/bitcoin/git
+  config_dir: /home/bitcoin/.bitcoin
+
+  # ** WARNING **
+  # ** DATA LOSS **
+  #
+  # The below reformat functionality will delete the contents of the storage device located at "device_path"
+  # This action cannot be undone, and is included as an optional convenience for new hardware/new installations.
+  #
+  reformat_device: False
+  device_path: ""
+  filesystem: ext4
+
+# Optional (disabled by default), requires functional full bitcoin node
+lightning_node_vars:
+  full_compile: True
+  enabled: False
+
+# Optional (disabled by default), requires functional lightning node
+lightning_addons_vars:
+  full_compile: True
+  enabled: False
