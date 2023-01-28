@@ -13,7 +13,7 @@
     group: "{{ linux_service_user }}"
   loop:
     - { "path": "{{ bitcoin_node_vars['data_root'] }}", "state": "directory" }
-    - { "path": "{{ bitcoin_node_vars['data_root']/.bitcoin }}", "state": "directory" }
+    - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin", "state": "directory" }
     - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin/logs", "state": "directory" }
     - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin/logs/debug.log", "state": "touch" }
     - { "path": "{{ bitcoin_node_vars['code_dir'] }}", "state": "directory" }
