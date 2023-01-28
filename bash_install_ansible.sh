@@ -2,7 +2,7 @@
 # This script is intended to bootstrap ansible using standard linux package managers and public repositories
 
 # List of packages
-ANSIBLE_OS_PACKAGES='python3-devel ansible'
+ANSIBLE_OS_PACKAGES='ansible'
 ANSIBLE_GALAXY_COLLECTIONS='ansible.posix community.general'
 
 # Detect package manager
@@ -10,6 +10,7 @@ if [ -x "$(command -v apt-get)" ]; then
     CMD="apt-get install --yes "
 elif [ -x "$(command -v dnf)" ]; then
     CMD="dnf install -y "
+    sudo dnf install -y epel-release
 elif [ -x "$(command -v yum)" ]; then
     # DNF is preferred, but some outdated centos/rhel systems may still use yum
     CMD="yum install -y "
@@ -22,5 +23,6 @@ else
 fi
 
 # Attempt to install with sudo and predicted CMD command
-sudo "$CMD" "$ANSIBLE_OS_PACKAGES"
-sudo ansible-galaxy collection install "$ANSIBLE_GALAXY_COLLECTIONS"
+sudo $CMD $ANSIBLE_OS_PACKAGES
+sudo ansible-galaxy collection install $ANSIBLE_GALAXY_COLLECTIONS
+
