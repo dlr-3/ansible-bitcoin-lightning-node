@@ -1,8 +1,10 @@
 ---
 - name: bitcoin build dependencies debian package install
-  package:
-    name: "{{ item }}"
+  apt:
     state: present
+    name: "{{ item }}"
+    update_cache: True
+    install_recommends: True
   loop:
     - git
     - build-essential
@@ -11,7 +13,7 @@
     - automake
     - pkg-config
     - bsdmainutils
-    - python3-devel
+    - python3
     - libevent-dev
     - libboost-system-dev
     - libboost-filesystem-dev
@@ -26,5 +28,3 @@
     - qttools5-dev
     - qttools5-dev-tools
     - libqrencode-dev
-
-
