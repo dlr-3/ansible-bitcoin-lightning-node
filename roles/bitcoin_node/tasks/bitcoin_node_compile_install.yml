@@ -2,7 +2,7 @@
 - name: Ensure linux_service_user is present
   user:
     name: "{{ linux_service_user }}"
-    shell: bash
+    shell: /bin/bash
     create_home: true
 
 - name: Ensure all necessary files and directories exist before proceeding
