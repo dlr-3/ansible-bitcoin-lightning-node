@@ -12,6 +12,7 @@
     fstype: "{{ bitcoin_node_vars['filesystem'] }}"
     dev: "{{ bitcoin_node_vars['device_path'] }}"
     state: present
+    force: True
 
 - name: Fetch the UUID of bitcoin_node_vars.device_path
   register: blkid_out
