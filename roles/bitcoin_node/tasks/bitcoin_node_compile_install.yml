@@ -48,12 +48,6 @@
         dest: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
         clone: True
 
-    - name: Install Berkeley database
-      shell:
-        cmd: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin/contrib/install_db4.sh $(pwd)"
-      args:
-        chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
-
     - name: Execute autogen.sh and configure from bitcoin git repo, then make + make install (this takes a very long time!)
       shell:
         cmd:
