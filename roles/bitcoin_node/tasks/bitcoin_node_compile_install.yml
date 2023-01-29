@@ -77,39 +77,3 @@
     owner: "{{ linux_service_user }}"
     group: "{{ linux_service_user }}"
     force: False
-
-- name: SystemD service configuration
-  when: update_systemd | default(False) | bool
-  block:
-
-    - name: template bitcoind systemd unit file
-      template:
-        src: bitcoind.service.j2
-        dest: /etc/systemd/system/bitcoind.service
-
-    - name: start bitcoind.service
-      register: bitcoind_systemctl_start
-      systemd:
-        state: started
-        enabled: True
-        name: bitcoind.service
-        daemon_reload: True
-
-    - name: mask systemd units that could interrupt node operation
-      systemd:
-        state: masked
-        name: "{{ item }}"
-      loop:
-        - "sleep.target"
-        - "suspend.target"
-        - "hibernate.target"
-        - "hybrid-sleep.target"
-
-    - name: restart logind
-      systemd:
-        state: restarted
-        name: "systemd-logind.service"
-
-- name: Finished, display status
-  debug:
-    var: bitcoind_systemctl_start
