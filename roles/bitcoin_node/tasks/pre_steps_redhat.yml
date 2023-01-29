@@ -12,8 +12,6 @@
     - automake
     - libevent-devel
     - boost-devel
-    - libdb4-devel
-    - libdb4-cxx-devel
     - python3-devel
     - miniupnpc-devel
     - zeromq-devel
