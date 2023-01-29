@@ -18,8 +18,10 @@ bitcoin_node_vars:
   update_systemd: True
   full_compile: True
   bitcoin_git_tag: "v24.0.1"
-  data_dir: /bitcoin
-  logging_dir: /bitcoin/logs
+
+  # The bitcoind datadir will be placed inside data_root
+  # The filesystem is mounted at data_root when proceededing with reformat_device=True
+  data_root: /data
   code_dir: /home/bitcoin/git
   config_dir: /home/bitcoin/.bitcoin
 

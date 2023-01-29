@@ -1,0 +1,32 @@
+---
+- name: template bitcoind systemd unit file
+  template:
+    src: bitcoind.service.j2
+    dest: /etc/systemd/system/bitcoind.service
+
+- name: start bitcoind.service
+  register: bitcoind_systemctl_start
+  systemd:
+    state: started
+    enabled: True
+    name: bitcoind.service
+    daemon_reload: True
+
+- name: mask systemd units that could interrupt node operation
+  systemd:
+    masked: True
+    name: "{{ item }}"
+  loop:
+    - "sleep.target"
+    - "suspend.target"
+    - "hibernate.target"
+    - "hybrid-sleep.target"
+
+- name: restart logind
+  systemd:
+    state: restarted
+    name: "systemd-logind.service"
+
+- name: Finished, display status
+  debug:
+    var: bitcoind_systemctl_start

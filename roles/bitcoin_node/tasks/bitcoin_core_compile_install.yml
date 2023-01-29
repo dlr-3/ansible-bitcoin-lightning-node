@@ -1,0 +1,79 @@
+---
+- name: Ensure linux_service_user is present
+  user:
+    name: "{{ linux_service_user }}"
+    shell: /bin/bash
+    create_home: true
+
+- name: Ensure all necessary files and directories exist before proceeding, and wipe existing repos before re-compiling
+  file:
+    path: "{{ item.path }}"
+    state: "{{ item.state }}"
+    owner: "{{ linux_service_user }}"
+    group: "{{ linux_service_user }}"
+    force: True
+  loop:
+    - { "path": "{{ bitcoin_node_vars['data_root'] }}", "state": "directory" }
+    - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin", "state": "directory" }
+    - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin/logs", "state": "directory" }
+    - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin/logs/debug.log", "state": "touch" }
+    - { "path": "{{ bitcoin_node_vars['config_dir'] }}", "state": "directory" }
+    - { "path": "{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf", "state": "touch" }
+
+- name: block device reformat
+  when:
+    - bitcoin_node_vars["reformat_device"] | default(false) | bool
+    - bitcoin_node_vars["device_path"] | regex_search("^\/dev\/")
+  include_tasks:
+    file: reformat_block_device.yml
+
+- name: Full bitcoin core recompile block
+  when: bitcoin_node_vars['full_compile'] | default('True') | bool
+  block:
+
+    - name: Wipe existing bitcoin repos, ensuring a fresh compile with latest code
+      file:
+        path: "{{ item.path }}"
+        state: "{{ item.state }}"
+        owner: "{{ linux_service_user }}"
+        group: "{{ linux_service_user }}"
+        force: True
+      loop:
+        - { "path": "{{ bitcoin_node_vars['code_dir'] }}", "state": "absent" }
+        - { "path": "{{ bitcoin_node_vars['code_dir'] }}", "state": "directory" }
+
+    - name: git clone bitcoin source code
+      git:
+        repo: 'https://github.com/bitcoin/bitcoin.git'
+        dest: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
+        clone: True
+
+    - name: build the Berkeley DB v4.8 using make, register the output for configuration flags in the compile step
+      register: bdb_build_result
+      shell:
+        cmd: "make -C depends NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_NATPMP=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1"
+      args:
+        chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
+
+    - name: Extract BDB_PREFIX value from build result output
+      set_fact:
+        bdb_prefix: "{{ bdb_build_result.stdout_lines | select('match','^to: .*') | last }}"
+
+    - name: Execute autogen.sh and configure from bitcoin git repo, then make + make install (this takes a very long time!)
+      shell:
+        cmd: "git checkout tags/{{ bitcoin_node_vars['bitcoin_git_tag'] }} && \
+              ./autogen.sh && \ 
+              export BDB_PREFIX=\"{{ bdb_prefix.split(' ') | last }}\" && \
+              ./configure BDB_LIBS=\"-L${BDB_PREFIX}/lib -ldb_cxx-4.8\" BDB_CFLAGS=\"-I${BDB_PREFIX}/include\" && \
+              make -C depends NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_NATPMP=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1 && \
+              sudo make install"
+      args:
+        chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
+
+- name: template bitcoin.conf configuration file if it does not exist
+  template:
+    src: bitcoin.conf.j2
+    dest: "{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf"
+    owner: "{{ linux_service_user }}"
+    group: "{{ linux_service_user }}"
+    force: False

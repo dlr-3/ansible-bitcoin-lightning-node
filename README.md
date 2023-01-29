@@ -7,8 +7,8 @@
 + [Contributing](../CONTRIBUTING.md)
 
 ## About <a name = "about"></a>
-This project is meant to download, verify, configure, and run all of the software needed to operate a full bitcoin node
-(and optionally a bitcoin lightning network node, with further optional addons) on common linux distributions.
+This project is meant to compile from source, install and run bitcoin core, lightning, on major linux OS/architectures
+Raspberry Pi 4 supported and tested! Rocky Linux, Debian, and more!
 
 This project does not use docker or related technology. All software installed by this automation suite is downloaded and
 compiled from verified 3rd party sources wherever possible, and is intended to give full transparency and control to the

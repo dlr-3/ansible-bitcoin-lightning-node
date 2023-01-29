@@ -4,12 +4,12 @@
     fail_msg: "User_input.yml file corrupted and/or missing key information. Re-installing this repository is advised."
     that:
       - bitcoin_node_vars["enabled"]
-      - bitcoin_node_vars["data_dir"] is defined
-      - bitcoin_node_vars["node_name"] is defined
+      - bitcoin_node_vars["data_root"] is defined
       - bitcoin_node_vars["config_dir"] is defined
-      - bitcoin_node_vars["logging_dir"] is defined
       - bitcoin_node_vars["full_compile"] is defined
       - bitcoin_node_vars["update_systemd"] is defined
+      - bitcoin_node_vars["node_rpc_username"] is defined
+      - bitcoin_node_vars["node_rpc_password"] is defined
 
 - name: Debian-type OS prerequisites and pre-flight checks
   when: ansible_os_family == "Debian"
@@ -21,9 +21,12 @@
   include_tasks:
     file: pre_steps_redhat.yml
 
-- name: bitcoin node compile and install
+- name: bitcoin core compile and install
   when: bitcoin_node_vars["full_compile"] | default(False) | bool
   include_tasks:
-    file: bitcoin_node_compile_install.yml
+    file: bitcoin_core_compile_install.yml
 
-
+- name: bitcoin node systemd install
+  when: bitcoin_node_vars["update_systemd"] | default(False) | bool
+  include_tasks:
+    file: bitcoin_systemd_install.yml
