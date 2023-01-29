@@ -4,9 +4,11 @@
     name: epel-release
     state: latest
 
+# Since the powertools repo is named "crb" in some distributions, just attempt to enable all of them.
 - name: enable powertools repo
+  ignore_errors: True
   shell:
-    cmd: "dnf config-manager --set-enabled powertools"
+    cmd: "dnf config-manager --set-enabled powertools crb"
 
 - name: bitcoin build dependencies dnf package install
   dnf:
