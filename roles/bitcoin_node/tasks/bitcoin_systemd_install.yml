@@ -14,7 +14,7 @@
 
 - name: mask systemd units that could interrupt node operation
   systemd:
-    state: masked
+    masked: True
     name: "{{ item }}"
   loop:
     - "sleep.target"
