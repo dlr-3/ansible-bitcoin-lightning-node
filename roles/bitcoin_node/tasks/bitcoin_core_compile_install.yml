@@ -70,10 +70,12 @@
       args:
         chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
 
-- name: template bitcoin.conf configuration file if it does not exist
+- name: template bitcoin.conf configuration file unless instructed otherwise (backup created automatically)
+  when: bitcoin_node_vars['template_bitcoin_conf'] | default(True) | bool
   template:
     src: bitcoin.conf.j2
     dest: "{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf"
     owner: "{{ linux_service_user }}"
     group: "{{ linux_service_user }}"
-    force: False
+    backup: True
+    force: True
