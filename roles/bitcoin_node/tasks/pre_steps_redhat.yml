@@ -4,9 +4,9 @@
     name: epel-release
     state: latest
 
-- name: enable powertools and epel-release repos
+- name: enable powertools repo
   shell:
-    cmd: "dnf config-manager --set-enabled powertools epel-release"
+    cmd: "dnf config-manager --set-enabled powertools"
 
 - name: bitcoin build dependencies dnf package install
   dnf:
