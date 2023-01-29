@@ -1,4 +1,10 @@
 ---
+- name: install EPEL repo
+  ansible.builtin.yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+
 - name: bitcoin build dependencies dnf package install
   package:
     name: "{{ item }}"
