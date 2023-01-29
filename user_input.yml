@@ -21,7 +21,7 @@ bitcoin_node_vars:
 
   # The bitcoind datadir will be placed inside data_root
   # The filesystem is mounted at data_root when proceededing with reformat_device=True
-  data_root: /data/
+  data_root: /data
   code_dir: /home/bitcoin/git
   config_dir: /home/bitcoin/.bitcoin
 
