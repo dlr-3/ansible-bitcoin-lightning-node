@@ -55,13 +55,9 @@
       args:
         chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
 
-    - name: build select regex
-      set_fact:
-        bdb_path_regex: "^to\:\ {{ bitcoin_node_vars['code_dir'] }}\/depends\/"
-
     - name: Extract BDB_PREFIX value from build result output
       set_fact:
-        bdb_prefix: "{{ bdb_build_result.stdout_lines | select('match',bdb_path_regex) }}"
+        bdb_prefix: "{{ bdb_build_result.stdout_lines | select('match','^to\:\ .*') }}"
 
     - name: Execute autogen.sh and configure from bitcoin git repo, then make + make install (this takes a very long time!)
       shell:
