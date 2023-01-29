@@ -70,11 +70,13 @@
       args:
         chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
 
-- name: template bitcoin.conf configuration file
+- name: template bitcoin.conf configuration file if it does not exist
   template:
     src: bitcoin.conf.j2
     dest: "{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf"
-    user: "{{ linux_service_user }}"
+    owner: "{{ linux_service_user }}"
+    group: "{{ linux_service_user }}"
+    force: False
 
 - name: SystemD service configuration
   when: update_systemd | default(False) | bool
