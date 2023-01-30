@@ -20,9 +20,9 @@ These instructions will get you a copy of the project up and running on your loc
 First, clone this repository onto the host that will run bitcoind, and run the `bash_install_ansible.sh` script
 
 ```commandline
-    cd && mkdir git && cd git && \
-    git clone https://github.com/dlr-3/ansible-bitcoin-lightning-node.git && \
-    ./ansible-bitcoin-lightning-node/bash_install_ansible.sh
+    cd; mkdir -p git; cd git; \
+    git clone https://github.com/dlr-3/ansible-bitcoin-lightning-node.git; \
+    /bin/bash ansible-bitcoin-lightning-node/bash_install_ansible.sh
 ```
 
 All users must enter some information into **user_input.yml** before deploying bitcoin and/or lightning
