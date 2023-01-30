@@ -17,6 +17,8 @@
   loop:
     - git
     - curl
+    - bzip2
+    - bzip2-libs
     - gcc-c++
     - libtool
     - make
