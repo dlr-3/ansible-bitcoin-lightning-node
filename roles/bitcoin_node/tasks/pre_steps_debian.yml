@@ -8,6 +8,7 @@
   loop:
     - git
     - curl
+    - bzip2
     - build-essential
     - libtool
     - autotools-dev
