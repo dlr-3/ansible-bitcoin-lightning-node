@@ -22,7 +22,6 @@
     file: pre_steps_redhat.yml
 
 - name: bitcoin core compile and install
-  when: bitcoin_node_vars["full_compile"] | default(False) | bool
   include_tasks:
     file: bitcoin_core_compile_install.yml
 

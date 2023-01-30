@@ -13,11 +13,12 @@ linux_service_user: bitcoin
 
 bitcoin_node_vars:
   enabled: True
+  full_compile: True
+  update_systemd: True
+  template_bitcoin_conf: True
+  bitcoin_git_tag: "v24.0.1"
   node_rpc_username: "NEW_USERNAME_HERE"
   node_rpc_password: "NEW_PASSWORD_HERE"
-  update_systemd: True
-  full_compile: True
-  bitcoin_git_tag: "v24.0.1"
 
   # The bitcoind datadir will be placed inside data_root
   # The filesystem is mounted at data_root when proceededing with reformat_device=True

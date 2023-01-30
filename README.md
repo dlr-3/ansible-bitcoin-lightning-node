@@ -15,11 +15,37 @@ compiled from verified 3rd party sources wherever possible, and is intended to g
 bitcoin node operator.
 
 ## Getting Started <a name = "getting_started"></a>
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
+These instructions will get you a copy of the project up and running on your local machine.
 
-See [deployment](#deployment) for notes on how to deploy the project on a live system.
+First, clone this repository onto the host that will run bitcoind, and run the `bash_install_ansible.sh` script
 
+```commandline
+    cd; mkdir -p git; cd git; \
+    git clone https://github.com/dlr-3/ansible-bitcoin-lightning-node.git; \
+    /bin/bash ansible-bitcoin-lightning-node/bash_install_ansible.sh
+```
 
+All users must enter some information into **user_input.yml** before deploying bitcoin and/or lightning
+
+The minimum required edits are as follows:
+
+1. update ```bitcoin_node_vars.node_rpc_username``` to a unique username value
+2. update ```bitcoin_node_vars.node_rpc_username``` to a unique password value
+3. edit data_root to point to your formatted and mounted file system which will contain the blockchain and related data
+4. If you are planning to wipe and/or format a new device:
+   1. change ```bitcoin_node_vars.reformat_device``` to "True"
+   2. make sure data_root points to an empty or missing directory. The default of "/data" is fine as long as you do not have a file or directory by the same name already
+   3. WARNING: DATA LOSS -- set ```bitcoin_node_vars.device_path``` to the path of your device, such as /dev/sdd2. Any data on this device will be lost.
+
+Now, with these edits done, we are ready to deploy bitcoin. Copy and paste this to a terminal with root privilege:
+
+```commandline
+    ansible-playbook bitcoin_node.yml -K -i inventory.yml 
+```
+
+That's it! if all goes well, bitcoin should be running with systemd under bitcoind.service 
+
+You can stop and disable it with ```sudo systemctl disable --now bitcoind``` 
 
 ### Prerequisites
 
