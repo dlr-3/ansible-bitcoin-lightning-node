@@ -20,16 +20,19 @@
     - { "path": "{{ bitcoin_node_vars['config_dir'] }}", "state": "directory" }
     - { "path": "{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf", "state": "touch" }
 
-- name: block device reformat
-  when:
-    - bitcoin_node_vars["reformat_device"] | default(false) | bool
-    - bitcoin_node_vars["device_path"] | regex_search("^\/dev\/")
-  include_tasks:
-    file: reformat_block_device.yml
-
 - name: Full bitcoin core recompile block
   when: bitcoin_node_vars['full_compile'] | default('True') | bool
   block:
+
+    - name: Debian-type OS prerequisites and pre-flight checks
+      when: ansible_os_family == "Debian"
+      include_tasks:
+        file: pre_steps_debian.yml
+
+    - name: RedHat-type OS prerequisites and pre-flight checks
+      when: ansible_os_family == "RedHat"
+      include_tasks:
+        file: pre_steps_redhat.yml
 
     - name: Wipe existing bitcoin repos, ensuring a fresh compile with latest code
       file:
@@ -59,7 +62,19 @@
       set_fact:
         bdb_prefix: "{{ bdb_build_result.stdout_lines | select('match','^to: .*') | last }}"
 
-    - name: Execute autogen.sh and configure from bitcoin git repo, then make + make install (this takes a very long time!)
+
+    # The build from source consists of 6 steps libtools and autoconf, which are chained together here via bash "&&"
+    # If any one command in the chain fails, then we are lost. This is a feature, not a bug.
+    #
+    # 1. git checkout the specific version of bitcoin core from the user_input.yml
+    # 2. run autogen.sh from this version of bitcoin core
+    # 3. export the berkely DB prefix from the previous task in this file
+    # 4. run autoconf configure using the BDB_PREFIX as needed
+    # 5. make
+    # 6. sudo make install
+    #
+
+    - name: Build bitcoin core from source (this takes a very long time!)
       shell:
         cmd: "git checkout tags/{{ bitcoin_node_vars['bitcoin_git_tag'] }} && \
               ./autogen.sh && \ 

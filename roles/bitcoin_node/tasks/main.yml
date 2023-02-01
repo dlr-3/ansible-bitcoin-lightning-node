@@ -11,15 +11,12 @@
       - bitcoin_node_vars["node_rpc_username"] is defined
       - bitcoin_node_vars["node_rpc_password"] is defined
 
-- name: Debian-type OS prerequisites and pre-flight checks
-  when: ansible_os_family == "Debian"
+- name: block device reformat
+  when:
+    - bitcoin_node_vars["reformat_device"] | default(false) | bool
+    - bitcoin_node_vars["device_path"] | regex_search("^\/dev\/")
   include_tasks:
-    file: pre_steps_debian.yml
-
-- name: RedHat-type OS prerequisites and pre-flight checks
-  when: ansible_os_family == "RedHat"
-  include_tasks:
-    file: pre_steps_redhat.yml
+    file: reformat_block_device.yml
 
 - name: bitcoin core compile and install
   include_tasks:
