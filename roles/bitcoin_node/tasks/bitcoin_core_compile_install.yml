@@ -32,15 +32,15 @@
   block:
 
     - name: Wipe existing bitcoin repos, ensuring a fresh compile with latest code
+      ignore_errors: True
       file:
         path: "{{ item.path }}"
         state: "{{ item.state }}"
         owner: "{{ linux_service_user }}"
         group: "{{ linux_service_user }}"
-        force: True
       loop:
-        - { "path": "{{ bitcoin_node_vars['code_dir'] }}", "state": "absent" }
         - { "path": "{{ bitcoin_node_vars['code_dir'] }}", "state": "directory" }
+        - { "path": "{{ bitcoin_node_vars['code_dir'] }}/bitcoin", "state": "absent" }
 
     - name: git clone bitcoin source code
       git:

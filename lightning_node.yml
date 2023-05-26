@@ -11,7 +11,7 @@
         name: lightning_node
 
     - name: Lightning addon tasks
-      when: lightning_addons_vars["enabled] | default(False) | bool
+      when: lightning_addons_vars["enabled"] | default(False) | bool
       include_role:
         name: lightning_addons
 

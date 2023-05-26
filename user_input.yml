@@ -8,7 +8,7 @@ linux_service_user: bitcoin
 # Configuration options for the bitcoin node
 # Existing bitcoin blockchain will be detected and reused if present in data_dir.
 # This software makes no attempt to delete BTC blockchain data, due to the long time required for recovering it via IBD
-# If you have an old/corrupt/partial blockchain and you wish to "start fresh" with a complete IBD procedure, consider
+# If you have an old/corrupt/partial blockchain and you wish to "start fresh" with a complete IBD procedure
 # please consider manually removing the old blockchain data, or proceeding with the full reformat below.
 
 bitcoin_node_vars:
@@ -16,22 +16,22 @@ bitcoin_node_vars:
   full_compile: True
   update_systemd: True
   template_bitcoin_conf: True
-  bitcoin_git_tag: "v24.0.1"
+  bitcoin_git_tag: "v25.0"
   node_rpc_username: "NEW_USERNAME_HERE"
   node_rpc_password: "NEW_PASSWORD_HERE"
 
   # The bitcoind datadir will be placed inside data_root
-  # The filesystem is mounted at data_root when proceededing with reformat_device=True
+  # The filesystem is mounted at data_root when proceeding with reformat_device=True
   data_root: /data
   code_dir: /home/bitcoin/git
   config_dir: /home/bitcoin/.bitcoin
 
-  # ** WARNING **
-  # ** DATA LOSS **
-  #
+  # WARNING
   # The below reformat functionality will delete the contents of the storage device located at "device_path"
   # This action cannot be undone, and is included as an optional convenience for new hardware/new installations.
-  #
+  #4
+  # ** WARNING **
+  # ** DATA LOSS when reformat_device == True **
   reformat_device: False
   device_path: ""
   filesystem: ext4
