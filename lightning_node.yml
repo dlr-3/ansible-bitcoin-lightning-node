@@ -14,4 +14,3 @@
       when: lightning_addons_vars["enabled"] | default(False) | bool
       include_role:
         name: lightning_addons
-

@@ -16,6 +16,7 @@ bitcoin_node_vars:
   full_compile: True
   update_systemd: True
   template_bitcoin_conf: True
+  bitcoin_core_repo: "https://github.com/bitcoin/bitcoin"
   bitcoin_git_tag: "v25.0"
   node_rpc_username: "NEW_USERNAME_HERE"
   node_rpc_password: "NEW_PASSWORD_HERE"
@@ -38,8 +39,13 @@ bitcoin_node_vars:
 
 # Optional (disabled by default), requires functional full bitcoin node
 lightning_node_vars:
-  full_compile: True
   enabled: False
+  full_compile: True
+  update_systemd: True
+  template_lnd_conf: True
+  lightning_lnd_repo: "https://github.com/lightningnetwork/lnd"
+  lnd_git_tag: "v0.16.2-beta"
+
 
 # Optional (disabled by default), requires functional lightning node
 lightning_addons_vars:

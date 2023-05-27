@@ -5,6 +5,13 @@
     shell: /bin/bash
     create_home: true
 
+- name: block device reformat
+  when:
+    - bitcoin_node_vars["reformat_device"] | default(false) | bool
+    - bitcoin_node_vars["device_path"] | regex_search("^\/dev\/")
+  include_tasks:
+    file: reformat_block_device.yml
+
 - name: Ensure all necessary files and directories exist before proceeding, and wipe existing repos before re-compiling
   file:
     path: "{{ item.path }}"
@@ -19,13 +26,6 @@
     - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin/logs/debug.log", "state": "touch" }
     - { "path": "{{ bitcoin_node_vars['config_dir'] }}", "state": "directory" }
     - { "path": "{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf", "state": "touch" }
-
-- name: block device reformat
-  when:
-    - bitcoin_node_vars["reformat_device"] | default(false) | bool
-    - bitcoin_node_vars["device_path"] | regex_search("^\/dev\/")
-  include_tasks:
-    file: reformat_block_device.yml
 
 - name: Full bitcoin core recompile block
   when: bitcoin_node_vars['full_compile'] | default('True') | bool
@@ -44,7 +44,7 @@
 
     - name: git clone bitcoin source code
       git:
-        repo: 'https://github.com/bitcoin/bitcoin.git'
+        repo: "{{ bitcoin_node_vars['bitcoin_core_repo'] }}"
         dest: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
         clone: True
 
