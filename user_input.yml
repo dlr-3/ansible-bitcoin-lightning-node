@@ -1,5 +1,5 @@
 ---
-# This file will work out of the box to install a bitcion node, but can be edited to each user's preferences.
+# This file will work out of the box to install a bitcoin node, but can be edited to each user's preferences.
 #
 
 # This user does NOT require root access, and will be the sole owner of all bitcoin/lightning related files
@@ -45,6 +45,7 @@ lightning_node_vars:
   template_lnd_conf: True
   lightning_lnd_repo: "https://github.com/lightningnetwork/lnd"
   lnd_git_tag: "v0.16.2-beta"
+
 
 
 # Optional (disabled by default), requires functional lightning node

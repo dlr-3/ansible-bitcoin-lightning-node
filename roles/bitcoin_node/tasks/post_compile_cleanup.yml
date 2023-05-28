@@ -1,0 +1,34 @@
+- name: Debian-type OS prerequisites and bitcoin core compile pre-flight checks
+  when:
+    - ansible_os_family == 'Debian'
+  block:
+
+    - name: x86 compile dependency apt package autoremove
+      when: ansible_architecture == 'x86_64'
+      apt:
+        state: absent
+        name: "{{ item }}"
+        autoremove: True
+      loop: "{{ debian_x86['btc_core_compile_packages'] }}"
+
+    - name: aarch64 compile dependency apt package autoremove
+      when: ansible_architecture == 'aarch64'
+      apt:
+        state: absent
+        name: "{{ item }}"
+        autoremove: True
+      loop: "{{ debian_aarch64['btc_core_compile_packages'] }}"
+
+
+- name: x86 RedHat-type OS compile dependency removal
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_architecture == 'x86_64'
+  block:
+
+    - name: x86 compile dependency dnf package autoremove
+      dnf:
+        name: "{{ item }}"
+        state: absent
+        autoremove: True
+      loop: "{{ redhat_x86['btc_core_compile_packages'] }}"

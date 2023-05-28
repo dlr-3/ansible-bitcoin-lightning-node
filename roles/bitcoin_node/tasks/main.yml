@@ -1,5 +1,5 @@
 ---
-- name: Verify essential values from user_input.yml
+- name: Verify essential inputs from user_input.yml
   assert:
     fail_msg: "User_input.yml file corrupted and/or missing key information. Re-installing this repository is advised."
     that:
@@ -11,19 +11,20 @@
       - bitcoin_node_vars['node_rpc_username'] is defined
       - bitcoin_node_vars['node_rpc_password'] is defined
 
-- name: Debian-type OS prerequisites and bitcoin core compile pre-flight checks
-  when: 
-    - ansible_os_family == "Debian"
-    - bitcoin_node_vars['full_compile'] | bool
-  include_tasks:
-    file: pre_steps_debian.yml
+- name: Ensure user has set a unique username and password in user_input.yml
+  assert:
+    fail_msg: "You must set a custom username in user_input.yml --> bitcoin_node_vars --> node_rpc_username"
+    that: bitcoin_node_vars['node_rpc_username'] != 'NEW_USERNAME_HERE'
 
-- name: RedHat-type OS prerequisites and bitcoin core compile pre-flight checks
-  when:
-    - ansible_os_family == "RedHat"
-    - bitcoin_node_vars['full_compile'] | bool
+- name: Ensure user has set a unique password in user_input.yml
+  assert:
+    fail_msg: "You must set a custom password in user_input.yml --> bitcoin_node_vars --> node_rpc_password"
+    that: bitcoin_node_vars['node_rpc_password'] != 'NEW_PASSWORD_HERE'
+
+- name: prerequisites for bitcoin core compilation
+  when: bitcoin_node_vars['full_compile'] | bool
   include_tasks:
-    file: pre_steps_redhat.yml
+    file: prerequisites.yml
 
 - name: bitcoin core compile and install
   include_tasks:
@@ -33,3 +34,10 @@
   when: bitcoin_node_vars['update_systemd'] | default(False) | bool
   include_tasks:
     file: bitcoin_systemd_install.yml
+
+- name: cleanup build dependencies after compiling
+  when:
+    - bitcoin_node_vars['full_compile'] | bool
+    - cleanup | default(True) | bool
+  include_tasks:
+    file: post_compile_cleanup.yml

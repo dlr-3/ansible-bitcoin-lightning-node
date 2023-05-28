@@ -1,0 +1,45 @@
+---
+- name: Verify essential values from user_input.yml
+  assert:
+    fail_msg: "User_input.yml file corrupted and/or missing key information. Re-installing this repository is advised."
+    that:
+      - lightning_node_vars['enabled']
+      - lightning_node_vars['data_root'] is defined
+      - lightning_node_vars['config_dir'] is defined
+      - lightning_node_vars['full_compile'] is defined
+      - lightning_node_vars['update_systemd'] is defined
+      - lightning_node_vars['node_rpc_username'] is defined
+      - lightning_node_vars['node_rpc_password'] is defined
+
+- name: redhat x86 architecture
+  when:
+    - ansible_architecture == 'x86_64'
+    - ansible_os_family == "RedHat"
+    - lightning_node_vars['full_compile'] | bool
+  include_tasks:
+    file: pre_steps_redhat.yml
+
+- name: debian x86 architecture
+  when:
+    - ansible_architecture == 'x86_64'
+    - ansible_os_family == 'Debian'
+    - lightning_node_vars['full_compile'] | bool
+  include_tasks:
+    file: pre_steps_debian.yml
+
+- name: debian aarch64 architecture ( raspberry pi )
+  when:
+    - ansible_architecture == 'aarch64'
+    - ansible_os_family == 'Debian'
+    - lightning_node_vars['full_compile'] | bool
+  include_tasks:
+    file: pre_steps_debian_aarch64.yml
+
+- name: LND compile and install
+  include_tasks:
+    file: lnd_compile_install.yml
+
+- name: LND systemd install
+  when: lightning_node_vars['update_systemd'] | default(False) | bool
+  include_tasks:
+    file: lnd_systemd_install.yml

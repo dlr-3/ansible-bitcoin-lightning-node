@@ -1,0 +1,75 @@
+---
+redhat_x86:
+  basic_packages:
+    - git
+    - curl
+    - python3-devel
+  btc_core_compile_packages:
+    - gcc-c++
+    - libtool
+    - make
+    - autoconf
+    - automake
+    - patch
+    - libevent-devel
+    - boost-devel
+    - miniupnpc-devel
+    - zeromq-devel
+    - qt5-qttools-devel
+    - qt5-qtbase-devel
+    - qrencode-devel
+    - sqlite-devel
+
+debian_x86:
+  basic_packages:
+    - git
+    - curl
+    - python3
+  btc_core_compile_packages:
+    - build-essential
+    - libtool
+    - autotools-dev
+    - automake
+    - pkg-config
+    - bsdmainutils
+    - libevent-dev
+    - libboost-system-dev
+    - libboost-filesystem-dev
+    - libboost-test-dev
+    - libboost-thread-dev
+    - libsqlite3-dev
+    - libminiupnpc-dev
+    - libzmq3-dev
+    - libqt5gui5
+    - libqt5core5a
+    - libqt5dbus5
+    - qttools5-dev
+    - qttools5-dev-tools
+    - libqrencode-dev
+
+debian_aarch64:
+  basic_packages:
+    - git
+    - curl
+    - python3
+  btc_core_compile_packages:
+    - build-essential
+    - libtool
+    - autotools-dev
+    - automake
+    - pkg-config
+    - bsdmainutils
+    - libevent-dev
+    - libboost-system-dev
+    - libboost-filesystem-dev
+    - libboost-test-dev
+    - libboost-thread-dev
+    - libsqlite3-dev
+    - libminiupnpc-dev
+    - libzmq3-dev
+    - libqt5gui5
+    - libqt5core5a
+    - libqt5dbus5
+    - qttools5-dev
+    - qttools5-dev-tools
+    - libqrencode-dev
