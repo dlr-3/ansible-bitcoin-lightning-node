@@ -1,6 +1,4 @@
 ---
-# This file will work out of the box to install a bitcoin node, but can be edited to each user's preferences.
-#
 
 # This user does NOT require root access, and will be the sole owner of all bitcoin/lightning related files
 linux_service_user: bitcoin
@@ -23,14 +21,16 @@ bitcoin_node_vars:
 
   # The bitcoind datadir will be placed inside data_root
   # The filesystem is mounted at data_root when proceeding with reformat_device=True
-  data_root: /data
-  code_dir: /home/bitcoin/git
-  config_dir: /home/bitcoin/.bitcoin
+  data_root: "/data"
+
+  # These are placed in the home directory of the linux_service_user
+  code_dir: "git"
+  config_dir: ".bitcoin"
 
   # WARNING
   # The below reformat functionality will delete the contents of the storage device located at "device_path"
   # This action cannot be undone, and is included as an optional convenience for new hardware/new installations.
-  #4
+  #
   # ** WARNING **
   # ** DATA LOSS when reformat_device == True **
   reformat_device: False
@@ -41,12 +41,14 @@ bitcoin_node_vars:
 lightning_node_vars:
   enabled: False
   full_compile: True
+  install_golang: True  # set to 'False' if you want to use your own golang install at $GOPATH
   update_systemd: True
   template_lnd_conf: True
   lightning_lnd_repo: "https://github.com/lightningnetwork/lnd"
   lnd_git_tag: "v0.16.2-beta"
-
-
+  bitcoin_datadir: "/data/.bitcoin"
+  lnd_data_dir: "/data/.lnd"
+  lnd_config_dir: ".lnd"
 
 # Optional (disabled by default), requires functional lightning node
 lightning_addons_vars:

@@ -1,0 +1,94 @@
+- name: detect existing bitcoind command
+  register: which_bitcoind
+  shell: "which bitcoind"
+  failed_when:
+    - which_bitcoind.rc != 0
+    - "'no bitcoind in' in which_bitcoind.stdout"
+
+- name: x86 Debian-type OS prerequisites and LND compile pre-flight checks
+  when:
+    - ansible_os_family == 'Debian'
+    - ansible_architecture == 'x86_64'
+  block:
+
+    - name: Download Go (golang)
+      when: lightning_node_vars['install_golang'] | bool
+      get_url:
+        url: "{{ debian_x86['golang']['source_url'] }}"
+        checksum: "sha256:{{ debian_x86['golang']['sha256sum'] }}"
+        dest: "/home/{{ linux_service_user }}/"
+        decompress: True
+
+    - name: x86 build dependencies debian package install
+      apt:
+        state: present
+        name: "{{ item }}"
+        update_cache: True
+        install_recommends: True
+      loop: "{{ debian_x86['basic_packages'] + debian_x86['lnd_compile_packages'] }}"
+
+- name: aarch64 Debian-type OS prerequisites and LND compile pre-flight checks
+  when:
+    - ansible_os_family == 'Debian'
+    - ansible_architecture == 'x86_64'
+  block:
+
+    - name: Download Go (golang)
+      when: lightning_node_vars['install_golang'] | bool
+      register: golang_download
+      get_url:
+        url: "{{ debian_aarch64['golang']['source_url'] }}"
+        checksum: "sha256:{{ debian_aarch64['golang']['sha256sum'] }}"
+        dest: "/home/{{ linux_service_user }}"
+        decompress: True
+
+    - name: aarch64 build dependencies debian package install
+      apt:
+        state: present
+        name: "{{ item }}"
+        update_cache: True
+        install_recommends: True
+      loop: "{{ debian_aarch64['basic_packages'] + debian_aarch64['lnd_compile_packages'] }}"
+
+
+- name: x86 RedHat-type OS prerequisites and LND compile pre-flight checks
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_architecture == 'x86_64'
+  block:
+
+    - name: Download Go (golang)
+      when: lightning_node_vars['install_golang'] | bool
+      get_url:
+        url: "{{ redhat_x86['golang']['source_url'] }}"
+        checksum: "sha256:{{ redhat_x86['golang']['sha256sum'] }}"
+        dest: "/home/{{ linux_service_user }}/"
+        decompress: True
+
+    - name: x86 build dependencies dnf package install
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ redhat_x86['basic_packages'] +  redhat_x86['lnd_compile_packages'] }}"
+
+
+- name: Install Go (golang)
+  when: lightning_node_vars['install_golang'] | bool
+  register: golang_install
+  unarchive:
+    src: "{{ golang_download['dest'] }}"
+    dest: "/home/{{ linux_service_user }}"
+
+- name: Set GOPATH and PATH environment variables via .bashrc
+  when: lightning_node_vars['install_golang'] | bool
+  lineinfile:
+    file: "/home/{{ linux_service_user }}/.bashrc"
+    line: "export GOPATH=/home/{{ linux_service_user }}/go"
+    regexp: "^export GOPATH\="
+  loop:
+    - { regexp: "^export PATH\=", line: "export PATH=$PATH:$GOPATH/bin" }
+    - { regexp: "^export PATH", line: ""}
+
+- name: Set GOPATH and PATH environment variables via .bashrc
+  when: lightning_node_vars['install_golang'] | bool
+  lineinfile:

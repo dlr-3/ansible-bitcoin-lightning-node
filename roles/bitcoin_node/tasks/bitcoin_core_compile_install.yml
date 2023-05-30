@@ -24,8 +24,8 @@
     - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin", "state": "directory" }
     - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin/logs", "state": "directory" }
     - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin/logs/debug.log", "state": "touch" }
-    - { "path": "{{ bitcoin_node_vars['config_dir'] }}", "state": "directory" }
-    - { "path": "{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf", "state": "touch" }
+    - { "path": "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['config_dir'] }}", "state": "directory" }
+    - { "path": "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf", "state": "touch" }
 
 - name: Full bitcoin core recompile block
   when: bitcoin_node_vars['full_compile'] | default('True') | bool
@@ -39,13 +39,13 @@
         owner: "{{ linux_service_user }}"
         group: "{{ linux_service_user }}"
       loop:
-        - { "path": "{{ bitcoin_node_vars['code_dir'] }}", "state": "directory" }
-        - { "path": "{{ bitcoin_node_vars['code_dir'] }}/bitcoin", "state": "absent" }
+        - { "path": "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['code_dir'] }}", "state": "directory" }
+        - { "path": "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['code_dir'] }}/bitcoin", "state": "absent" }
 
     - name: git clone bitcoin source code
       git:
         repo: "{{ bitcoin_node_vars['bitcoin_core_repo'] }}"
-        dest: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
+        dest: "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
         clone: True
 
     - name: build the Berkeley DB v4.8 using make, register the output for configuration flags in the compile step
@@ -53,7 +53,7 @@
       shell:
         cmd: "make -C depends NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_NATPMP=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1"
       args:
-        chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
+        chdir: "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
 
     - name: Extract BDB_PREFIX value from build result output
       set_fact:
@@ -68,13 +68,13 @@
               make -C depends NO_BOOST=1 NO_LIBEVENT=1 NO_QT=1 NO_SQLITE=1 NO_NATPMP=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1 && \
               sudo make install"
       args:
-        chdir: "{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
+        chdir: "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['code_dir'] }}/bitcoin"
 
 - name: template bitcoin.conf configuration file unless instructed otherwise (backup created automatically)
   when: bitcoin_node_vars['template_bitcoin_conf'] | default(True) | bool
   template:
     src: bitcoin.conf.j2
-    dest: "{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf"
+    dest: "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf"
     owner: "{{ linux_service_user }}"
     group: "{{ linux_service_user }}"
     backup: True

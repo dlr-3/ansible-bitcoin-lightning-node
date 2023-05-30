@@ -11,29 +11,11 @@
       - lightning_node_vars['node_rpc_username'] is defined
       - lightning_node_vars['node_rpc_password'] is defined
 
-- name: redhat x86 architecture
-  when:
-    - ansible_architecture == 'x86_64'
-    - ansible_os_family == "RedHat"
-    - lightning_node_vars['full_compile'] | bool
-  include_tasks:
-    file: pre_steps_redhat.yml
 
-- name: debian x86 architecture
-  when:
-    - ansible_architecture == 'x86_64'
-    - ansible_os_family == 'Debian'
-    - lightning_node_vars['full_compile'] | bool
+- name: prerequisites for lightning compilation
+  when: lightning_node_vars['full_compile'] | bool
   include_tasks:
-    file: pre_steps_debian.yml
-
-- name: debian aarch64 architecture ( raspberry pi )
-  when:
-    - ansible_architecture == 'aarch64'
-    - ansible_os_family == 'Debian'
-    - lightning_node_vars['full_compile'] | bool
-  include_tasks:
-    file: pre_steps_debian_aarch64.yml
+    file: prerequisites.yml
 
 - name: LND compile and install
   include_tasks:
@@ -43,3 +25,10 @@
   when: lightning_node_vars['update_systemd'] | default(False) | bool
   include_tasks:
     file: lnd_systemd_install.yml
+
+- name: cleanup build dependencies after compiling
+  when:
+    - lightning_node_vars['full_compile'] | bool
+    - cleanup | default(True) | bool
+  include_tasks:
+    file: post_compile_cleanup.yml

@@ -1,0 +1,62 @@
+---
+- name: Ensure linux_service_user is present
+  user:
+    name: "{{ linux_service_user }}"
+    shell: /bin/bash
+    create_home: true
+
+- name: Ensure all necessary files and directories exist before proceeding, and wipe existing repos before re-compiling
+  file:
+    path: "{{ item.path }}"
+    state: "{{ item.state }}"
+    owner: "{{ linux_service_user }}"
+    group: "{{ linux_service_user }}"
+    force: True
+  loop:
+    - { "path": "{{ lightning_node_vars['data_root'] }}", "state": "directory" }
+    - { "path": "{{ lightning_node_vars['data_root'] }}/.bitcoin", "state": "directory" }
+    - { "path": "{{ lightning_node_vars['data_root'] }}/.bitcoin/logs", "state": "directory" }
+    - { "path": "{{ lightning_node_vars['data_root'] }}/.bitcoin/logs/debug.log", "state": "touch" }
+    - { "path": "{{ lightning_node_vars['config_dir'] }}", "state": "directory" }
+    - { "path": "{{ lightning_node_vars['config_dir'] }}/bitcoin.conf", "state": "touch" }
+
+- name: Full LND compile block
+  when: lightning_node_vars['full_compile'] | default('True') | bool
+  block:
+
+    - name: Wipe existing bitcoin repos, ensuring a fresh compile with latest code
+      ignore_errors: True
+      file:
+        path: "{{ item.path }}"
+        state: "{{ item.state }}"
+        owner: "{{ linux_service_user }}"
+        group: "{{ linux_service_user }}"
+      loop:
+        - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['code_dir'] }}", "state": "directory" }
+        - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['code_dir'] }}/lnd", "state": "absent" }
+      
+    - name: git clone LND source code
+      git:
+        repo: "{{ lightning_node_vars['lightning_core_repo'] }}"
+        dest: "/home/{{ linux_service_user }}/{{ lightning_node_vars['code_dir'] }}/lnd"
+        clone: True
+
+    - name: compile LND
+      shell:
+        cmd: "export GOPATH=~/go && \ 
+              export PATH=$PATH:$GOPATH/bin && \ 
+              git checkout {{ lightning_node_vars['lnd_git_tag'] }} && \ 
+              make install"
+      args:
+        chdir: "/home/{{ linux_service_user }}/{{ lightning_node_vars['code_dir'] }}/lnd"
+        
+
+- name: template lnd.conf configuration file unless instructed otherwise (backup created automatically)
+  when: lightning_node_vars['template_lightning_conf'] | default(True) | bool
+  template:
+    src: bitcoin.conf.j2
+    dest: "/home/{{ linux_service_user }}/{{ lightning_node_vars['config_dir'] }}/lnd.conf"
+    owner: "{{ linux_service_user }}"
+    group: "{{ linux_service_user }}"
+    backup: True
+    force: True
