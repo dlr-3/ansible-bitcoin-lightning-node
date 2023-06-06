@@ -14,17 +14,15 @@
     force: True
   loop:
     - { "path": "{{ lightning_node_vars['data_root'] }}", "state": "directory" }
-    - { "path": "{{ lightning_node_vars['data_root'] }}/.bitcoin", "state": "directory" }
-    - { "path": "{{ lightning_node_vars['data_root'] }}/.bitcoin/logs", "state": "directory" }
-    - { "path": "{{ lightning_node_vars['data_root'] }}/.bitcoin/logs/debug.log", "state": "touch" }
-    - { "path": "{{ lightning_node_vars['config_dir'] }}", "state": "directory" }
-    - { "path": "{{ lightning_node_vars['config_dir'] }}/bitcoin.conf", "state": "touch" }
+    - { "path": "{{ lightning_node_vars['data_root'] }}/logs", "state": "directory" }
+    - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['config_dir'] }}", "state": "directory" }
+    - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['config_dir'] }}/lnd.conf", "state": "touch" }
 
 - name: Full LND compile block
   when: lightning_node_vars['full_compile'] | default('True') | bool
   block:
 
-    - name: Wipe existing bitcoin repos, ensuring a fresh compile with latest code
+    - name: Wipe existing LND repos, ensuring a fresh compile with latest source version
       ignore_errors: True
       file:
         path: "{{ item.path }}"
@@ -54,7 +52,7 @@
 - name: template lnd.conf configuration file unless instructed otherwise (backup created automatically)
   when: lightning_node_vars['template_lightning_conf'] | default(True) | bool
   template:
-    src: bitcoin.conf.j2
+    src: lnd.conf.j2
     dest: "/home/{{ linux_service_user }}/{{ lightning_node_vars['config_dir'] }}/lnd.conf"
     owner: "{{ linux_service_user }}"
     group: "{{ linux_service_user }}"

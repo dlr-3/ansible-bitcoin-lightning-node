@@ -1,0 +1,16 @@
+[Bitcoin]
+bitcoin.active=true
+bitcoin.mainnet=true
+bitcoin.node=bitcoind
+
+[Bitcoind]
+bitcoind.zmqpubrawblock=tcp://127.0.0.1:28332
+bitcoind.zmqpubrawtx=tcp://127.0.0.1:28333
+bitcoind.rpcuser={{ bitcoin_node_vars['node_rpc_username'] }}
+bitcoind.rpcpass={{ bitcoin_node_vars['node_rpc_password'] }}
+
+[Application Options]
+datadir={{ lightning_node_vars['lnd_data_dir'] }}
+logdir={{ lightning_node_vars['lnd_data_dir'] }}/logs
+maxlogfiles=5
+maxlogfilesize=20

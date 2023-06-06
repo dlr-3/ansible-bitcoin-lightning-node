@@ -10,14 +10,14 @@ linux_service_user: bitcoin
 # please consider manually removing the old blockchain data, or proceeding with the full reformat below.
 
 bitcoin_node_vars:
+  node_rpc_username: "NEW_USERNAME_HERE"
+  node_rpc_password: "NEW_PASSWORD_HERE"
   enabled: True
   full_compile: True
   update_systemd: True
   template_bitcoin_conf: True
   bitcoin_core_repo: "https://github.com/bitcoin/bitcoin"
   bitcoin_git_tag: "v25.0"
-  node_rpc_username: "NEW_USERNAME_HERE"
-  node_rpc_password: "NEW_PASSWORD_HERE"
 
   # The bitcoind datadir will be placed inside data_root
   # The filesystem is mounted at data_root when proceeding with reformat_device=True
