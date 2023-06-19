@@ -1,0 +1,32 @@
+---
+- name: template LND systemd unit file
+  template:
+    src: lnd.service.j2
+    dest: /etc/systemd/system/lnd.service
+
+- name: start lnd.service
+  register: lnd_systemctl_start
+  systemd:
+    state: started
+    enabled: True
+    name: lnd.service
+    daemon_reload: True
+
+- name: mask systemd units that could interrupt node operation
+  systemd:
+    masked: True
+    name: "{{ item }}"
+  loop:
+    - "sleep.target"
+    - "suspend.target"
+    - "hibernate.target"
+    - "hybrid-sleep.target"
+
+- name: restart logind
+  systemd:
+    state: restarted
+    name: "systemd-logind.service"
+
+- name: Finished, display status
+  debug:
+    var: lnd_systemctl_start

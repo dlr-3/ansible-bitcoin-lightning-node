@@ -1,16 +1,18 @@
 [Unit]
-Description=Lightning Network Node
-After=network.target
+Description=Lightning Network Daemon
+Requires=bitcoind.service
+After=bitcoind.service
 
 [Service]
 Type=simple
 Restart=always
 User={{ linux_service_user }}
-ExecStart=/home/{{ linux_service_user }}/go/bin/lnd \
-    -datadir={{ bitcoin_node_vars["data_root"] }}/.bitcoin \
-    -conf={{ bitcoin_node_vars["config_dir"] }}/bitcoin.conf
+ExecStart=/home/{{ linux_service_user }}/go/bin/lnd
 ExecStop=/home/{{ linux_service_user }}/go/bin/lncli stop
 PIDFile=/var/run/bitcoin/lnd.pid
+User=bitcoin
+Group=bitcoin
+KillMode=process
 
 [Install]
 WantedBy=multi-user.target
