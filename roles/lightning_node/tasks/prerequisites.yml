@@ -80,6 +80,8 @@
   unarchive:
     src: "{{ golang_download['dest'] }}"
     dest: "/home/{{ linux_service_user }}"
+    owner: "{{ linux_service_user }}"
+    group: "{{ linux_service_user }}"
 
 - name: Set GOPATH environment variable via .bashrc
   when: lightning_node_vars['install_golang'] | bool
@@ -93,3 +95,9 @@
   lineinfile:
     path: "/home/{{ linux_service_user }}/.bashrc"
     line: "export PATH=$PATH:$GOPATH/bin"
+
+- name: remove golang_download archive after installing to GOPATH
+  file:
+    path: "{{ golang_download['dest'] }}"
+    state: absent
+    force: True
