@@ -10,8 +10,6 @@ User={{ linux_service_user }}
 ExecStart=/home/{{ linux_service_user }}/go/bin/lnd
 ExecStop=/home/{{ linux_service_user }}/go/bin/lncli stop
 PIDFile=/var/run/bitcoin/lnd.pid
-User=bitcoin
-Group=bitcoin
 KillMode=process
 
 [Install]
