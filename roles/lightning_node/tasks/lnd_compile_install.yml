@@ -20,7 +20,8 @@
 
 - name: Full LND compile block
   when: lightning_node_vars['full_compile'] | default('True') | bool
-  become: "{{ linux_service_user }}"
+  become: True
+  become_user: "{{ linux_service_user }}"
   block:
 
     - name: Wipe existing LND repos, ensuring a fresh compile with latest source version
