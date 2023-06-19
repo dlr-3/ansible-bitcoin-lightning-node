@@ -5,11 +5,11 @@
     that:
       - lightning_node_vars['enabled']
       - lightning_node_vars['lnd_data_dir'] is defined
-      - lightning_node_vars['config_dir'] is defined
+      - lightning_node_vars['lnd_config_dir'] is defined
       - lightning_node_vars['full_compile'] is defined
       - lightning_node_vars['update_systemd'] is defined
-      - lightning_node_vars['node_rpc_username'] is defined
-      - lightning_node_vars['node_rpc_password'] is defined
+      - bitcoin_node_vars['node_rpc_username'] is defined
+      - bitcoin_node_vars['node_rpc_password'] is defined
 
 
 - name: prerequisites for lightning compilation
