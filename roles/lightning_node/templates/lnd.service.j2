@@ -6,11 +6,11 @@ After=network.target
 Type=simple
 Restart=always
 User={{ linux_service_user }}
-ExecStart=/usr/local/bin/bitcoind \
+ExecStart=/home/{{ linux_service_user }}/go/bin/lnd \
     -datadir={{ bitcoin_node_vars["data_root"] }}/.bitcoin \
     -conf={{ bitcoin_node_vars["config_dir"] }}/bitcoin.conf
-ExecStop=/usr/local/bin/bitcoin-cli -datadir={{ bitcoin_node_vars["data_root"] }}/.bitcoin stop
-PIDFile=/var/run/bitcoin/bitcoin.pid
+ExecStop=/home/{{ linux_service_user }}/go/bin/lncli stop
+PIDFile=/var/run/bitcoin/lnd.pid
 
 [Install]
 WantedBy=multi-user.target

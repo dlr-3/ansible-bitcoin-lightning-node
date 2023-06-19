@@ -1,3 +1,6 @@
+; Refer to the following link for a complete list of possible configurations
+; https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf
+
 [Bitcoin]
 bitcoin.active=true
 bitcoin.mainnet=true
@@ -6,10 +9,14 @@ bitcoin.node=bitcoind
 [Bitcoind]
 bitcoind.zmqpubrawblock=tcp://127.0.0.1:28332
 bitcoind.zmqpubrawtx=tcp://127.0.0.1:28333
+bitcoind.rpchost=127.0.0.1
 bitcoind.rpcuser={{ bitcoin_node_vars['node_rpc_username'] }}
 bitcoind.rpcpass={{ bitcoin_node_vars['node_rpc_password'] }}
 
 [Application Options]
+rpclisten=127.0.0.1:10009
+tlscertpath=~/{{ lightning_node_vars['lnd_config_dir'] }}/tls.cert
+tlskeypath=~/{{ lightning_node_vars['lnd_config_dir'] }}/tls.key
 datadir={{ lightning_node_vars['lnd_data_dir'] }}
 logdir={{ lightning_node_vars['lnd_data_dir'] }}/logs
 maxlogfiles=5

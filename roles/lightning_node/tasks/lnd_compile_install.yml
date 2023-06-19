@@ -20,6 +20,7 @@
 
 - name: Full LND compile block
   when: lightning_node_vars['full_compile'] | default('True') | bool
+  become: "{{ linux_service_user }}"
   block:
 
     - name: Wipe existing LND repos, ensuring a fresh compile with latest source version
@@ -41,7 +42,7 @@
 
     - name: compile LND
       shell:
-        cmd: "export GOPATH=~/go && \ 
+        cmd: "export GOPATH=/home/{{ linux_service_user }}/go && \ 
               export PATH=$PATH:$GOPATH/bin && \ 
               git checkout {{ lightning_node_vars['lnd_git_tag'] }} && \ 
               make install"
