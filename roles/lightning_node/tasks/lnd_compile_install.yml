@@ -15,6 +15,7 @@
   loop:
     - { "path": "{{ lightning_node_vars['lnd_data_dir'] }}", "state": "directory" }
     - { "path": "{{ lightning_node_vars['lnd_data_dir'] }}/logs", "state": "directory" }
+    - { "path": "{{ lightning_node_vars['lnd_data_dir'] }}/data", "state": "directory" }
     - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}", "state": "directory" }
     - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}/lnd.conf", "state": "touch" }
 
