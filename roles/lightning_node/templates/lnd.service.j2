@@ -8,7 +8,7 @@ Type=simple
 Restart=always
 User={{ linux_service_user }}
 ExecStart=/usr/local/bin/lnd
-ExecStop=/home/{{ linux_service_user }}/go/bin/lncli stop
+ExecStop=/usr/local/bin/lncli stop
 PIDFile=/var/run/bitcoin/lnd.pid
 KillMode=process
 

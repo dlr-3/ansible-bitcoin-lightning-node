@@ -54,11 +54,15 @@
   become: True
   become_user: root
   copy:
-    src: /home/{{ linux_service_user }}/go/bin/lnd
-    dest: /usr/local/bin/lnd
+    src: "/home/{{ linux_service_user }}/go/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
     remote_src: True
     owner: "{{ linux_service_user }}"
     group: "{{ linux_service_user }}"
+    mode: 0770
+  loop:
+    - 'lnd'
+    - 'lncli'
 
 - name: template lnd.conf configuration file unless instructed otherwise (backup created automatically)
   when: lightning_node_vars['template_lightning_conf'] | default(True) | bool
