@@ -7,8 +7,8 @@
 
 - name: Ensure all necessary files and directories exist before proceeding, and wipe existing repos before re-compiling
   file:
-    path: "{{ item.path }}"
     state: "{{ item.state }}"
+    path: "{{ item.path }}"
     owner: "{{ linux_service_user }}"
     group: "{{ linux_service_user }}"
     force: True
@@ -17,6 +17,14 @@
     - { "path": "{{ lightning_node_vars['lnd_data_dir'] }}/logs", "state": "directory" }
     - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}", "state": "directory" }
     - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}/lnd.conf", "state": "touch" }
+
+- name: symlink ~/.lnd/data to lightning_node_vars.lnd_data_dir
+  file:
+    state: link
+    src: "{{ lightning_node_vars['lnd_data_dir'] }}"
+    dest: "{{ lightning_node_vars['lnd_config_dir'] }}/data"
+    owner: "{{ linux_service_user }}"
+    group: "{{ linux_service_user }}"
 
 - name: Full LND compile block
   when: lightning_node_vars['full_compile'] | default('True') | bool

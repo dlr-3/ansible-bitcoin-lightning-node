@@ -4,7 +4,7 @@ Requires=bitcoind.service
 After=bitcoind.service
 
 [Service]
-Type=simple
+Type=notify
 Restart=always
 User={{ linux_service_user }}
 ExecStart=/usr/local/bin/lnd
