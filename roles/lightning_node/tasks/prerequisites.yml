@@ -13,6 +13,7 @@
 
     - name: Download Go (golang)
       when: lightning_node_vars['install_golang'] | bool
+      register: golang_download
       get_url:
         url: "{{ debian_x86['golang']['source_url'] }}"
         checksum: "sha256:{{ debian_x86['golang']['sha256sum'] }}"
@@ -59,6 +60,7 @@
 
     - name: Download Go (golang)
       when: lightning_node_vars['install_golang'] | bool
+      register: golang_download
       get_url:
         url: "{{ redhat_x86['golang']['source_url'] }}"
         checksum: "sha256:{{ redhat_x86['golang']['sha256sum'] }}"
