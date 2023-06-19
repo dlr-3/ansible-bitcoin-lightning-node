@@ -3,6 +3,9 @@
 # This user does NOT require root access, and will be the sole owner of all bitcoin/lightning related files
 linux_service_user: bitcoin
 
+# The code_dir is placed in the home directory of the linux_service_user and will be used to store downloaded git repos
+code_dir: "git"
+
 # Configuration options for the bitcoin node
 # Existing bitcoin blockchain will be detected and reused if present in data_dir.
 # This software makes no attempt to delete BTC blockchain data, due to the long time required for recovering it via IBD
@@ -23,8 +26,7 @@ bitcoin_node_vars:
   # The filesystem is mounted at data_root when proceeding with reformat_device=True
   data_root: "/data"
 
-  # These are placed in the home directory of the linux_service_user
-  code_dir: "git"
+  # The config dir is placed in the home directory of the linux_service_user
   config_dir: ".bitcoin"
 
   # WARNING

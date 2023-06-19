@@ -32,13 +32,13 @@
         owner: "{{ linux_service_user }}"
         group: "{{ linux_service_user }}"
       loop:
-        - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['code_dir'] }}", "state": "directory" }
-        - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['code_dir'] }}/lnd", "state": "absent" }
+        - { "path": "/home/{{ linux_service_user }}/{{ code_dir }}", "state": "directory" }
+        - { "path": "/home/{{ linux_service_user }}/{{ code_dir }}/lnd", "state": "absent" }
       
     - name: git clone LND source code
       git:
         repo: "{{ lightning_node_vars['lightning_lnd_repo'] }}"
-        dest: "/home/{{ linux_service_user }}/{{ lightning_node_vars['code_dir'] }}/lnd"
+        dest: "/home/{{ linux_service_user }}/{{ code_dir }}/lnd"
         clone: True
 
     - name: compile LND
@@ -48,7 +48,7 @@
               git checkout {{ lightning_node_vars['lnd_git_tag'] }} && \ 
               make install"
       args:
-        chdir: "/home/{{ linux_service_user }}/{{ lightning_node_vars['code_dir'] }}/lnd"
+        chdir: "/home/{{ linux_service_user }}/{{ code_dir }}/lnd"
         
 
 - name: template lnd.conf configuration file unless instructed otherwise (backup created automatically)
