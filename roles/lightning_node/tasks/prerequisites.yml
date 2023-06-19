@@ -84,12 +84,12 @@
 - name: Set GOPATH environment variable via .bashrc
   when: lightning_node_vars['install_golang'] | bool
   lineinfile:
-    file: "/home/{{ linux_service_user }}/.bashrc"
+    path: "/home/{{ linux_service_user }}/.bashrc"
     line: "export GOPATH=/home/{{ linux_service_user }}/go"
     regexp: "^export GOPATH"
 
 - name: append GOPATH to PATH environment variable via .bashrc
   when: lightning_node_vars['install_golang'] | bool
   lineinfile:
-    file: "/home/{{ linux_service_user }}/.bashrc"
+    path: "/home/{{ linux_service_user }}/.bashrc"
     line: "export PATH=$PATH:$GOPATH/bin"
