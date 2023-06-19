@@ -13,10 +13,10 @@
     group: "{{ linux_service_user }}"
     force: True
   loop:
-    - { "path": "{{ lightning_node_vars['data_root'] }}", "state": "directory" }
-    - { "path": "{{ lightning_node_vars['data_root'] }}/logs", "state": "directory" }
-    - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['config_dir'] }}", "state": "directory" }
-    - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['config_dir'] }}/lnd.conf", "state": "touch" }
+    - { "path": "{{ lightning_node_vars['lnd_data_dir'] }}", "state": "directory" }
+    - { "path": "{{ lightning_node_vars['lnd_data_dir'] }}/logs", "state": "directory" }
+    - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}", "state": "directory" }
+    - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}/lnd.conf", "state": "touch" }
 
 - name: Full LND compile block
   when: lightning_node_vars['full_compile'] | default('True') | bool
