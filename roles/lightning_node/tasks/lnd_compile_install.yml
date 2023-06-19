@@ -49,7 +49,14 @@
               make install"
       args:
         chdir: "/home/{{ linux_service_user }}/{{ code_dir }}/lnd"
-        
+
+    - name: Copy compiled LND binary to /usr/local/bin to allow execution via systemD
+      copy:
+        src: /home/{{ linux_service_user }}/go/bin/lnd
+        dest: /usr/local/bin/lnd
+        remote_src: True
+        owner: "{{ linux_service_user }}"
+        group: "{{ linux_service_user }}"
 
 - name: template lnd.conf configuration file unless instructed otherwise (backup created automatically)
   when: lightning_node_vars['template_lightning_conf'] | default(True) | bool
