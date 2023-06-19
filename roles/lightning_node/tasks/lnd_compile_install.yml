@@ -37,7 +37,7 @@
       
     - name: git clone LND source code
       git:
-        repo: "{{ lightning_node_vars['lightning_core_repo'] }}"
+        repo: "{{ lightning_node_vars['lightning_lnd_repo'] }}"
         dest: "/home/{{ linux_service_user }}/{{ lightning_node_vars['code_dir'] }}/lnd"
         clone: True
 
