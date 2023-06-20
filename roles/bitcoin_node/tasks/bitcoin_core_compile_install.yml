@@ -20,12 +20,18 @@
     group: "{{ linux_service_user }}"
     force: True
   loop:
-    - { "path": "{{ bitcoin_node_vars['data_root'] }}", "state": "directory" }
-    - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin", "state": "directory" }
-    - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin/logs", "state": "directory" }
-    - { "path": "{{ bitcoin_node_vars['data_root'] }}/.bitcoin/logs/debug.log", "state": "touch" }
-    - { "path": "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['config_dir'] }}", "state": "directory" }
-    - { "path": "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf", "state": "touch" }
+    - { "path": "{{ bitcoin_node_vars['data_root'] }}",
+        "state": "directory" }
+    - { "path": "{{ bitcoin_node_vars['data_root'] }}/{{ bitcoin_node_vars['config_dir'] }}",
+        "state": "directory" }
+    - { "path": "{{ bitcoin_node_vars['data_root'] }}/{{ bitcoin_node_vars['config_dir'] }}/logs",
+        "state": "directory" }
+    - { "path": "{{ bitcoin_node_vars['data_root'] }}/{{ bitcoin_node_vars['config_dir'] }}/logs/debug.log",
+        "state": "touch" }
+    - { "path": "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['config_dir'] }}",
+        "state": "directory" }
+    - { "path": "/home/{{ linux_service_user }}/{{ bitcoin_node_vars['config_dir'] }}/bitcoin.conf",
+        "state": "touch" }
 
 - name: Full bitcoin core recompile block
   when: bitcoin_node_vars['full_compile'] | default('True') | bool

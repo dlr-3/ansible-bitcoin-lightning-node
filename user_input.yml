@@ -1,30 +1,47 @@
 ---
+# This software makes no attempt to delete BTC blockchain data, due to the long time required for recovering it via IBD
+# If you have an old/corrupt/partial blockchain and you wish to "start fresh" with a complete IBD procedure
+# please consider manually removing the old blockchain data, or proceeding with the full reformat_device option.
 
 # This user does NOT require root access, and will be the sole owner of all bitcoin/lightning related files
 linux_service_user: bitcoin
 
-# The code_dir is placed in the home directory of the linux_service_user and will be used to store downloaded git repos
+# The code_dir is used to store downloaded git repos and will be placed in the home directory of the linux_service_user.
 code_dir: "git"
 
 # Configuration options for the bitcoin node
-# Existing bitcoin blockchain will be detected and reused if present in data_dir.
-# This software makes no attempt to delete BTC blockchain data, due to the long time required for recovering it via IBD
-# If you have an old/corrupt/partial blockchain and you wish to "start fresh" with a complete IBD procedure
-# please consider manually removing the old blockchain data, or proceeding with the full reformat below.
-
 bitcoin_node_vars:
+  # Instruct the automation suite to proceed with a bitcoin installation.
+  # Set to "false" to skip the bitcoin part and go directly to lightning install.
+  # bitcoin_node_vars from this file are still used and must accurately reflect the local bitcoin node in any case.
+  enabled: True
+
+  # bitcoin node RPC username and password
   node_rpc_username: "NEW_USERNAME_HERE"
   node_rpc_password: "NEW_PASSWORD_HERE"
-  enabled: True
+
+  # Instruct the automation to fully build and install bitcoind from source.
+  # This can be set to false if bitcoind is already installed and you don't want to rebuild it.
   full_compile: True
+
+  # update_systemd will install a systemd unit file for bitcoind. Strongly recommended for ease of use and auto startup.
   update_systemd: True
+
+  # This will template bitcoin.conf into config_dir which by default is "/home/bitcoin/.bitcoin/bitcoin.conf"
   template_bitcoin_conf: True
+
+  # Source code repository for bitcoin core
   bitcoin_core_repo: "https://github.com/bitcoin/bitcoin"
+
+  # Version of bitcoin core to install from bitcoin_core_repo
+  # See available versions at https://github.com/bitcoin/bitcoin/tags
   bitcoin_git_tag: "v25.0"
 
-  # The bitcoind datadir will be placed inside data_root
-  # The filesystem is mounted at data_root when proceeding with reformat_device=True
+  # The filesystem which holds the bitcoin blockchain is mounted at data_root when proceeding with reformat_device=True
   data_root: "/data"
+
+  # The bitcoind datadir will be placed inside data_root. With default values, the bitcoin_datadir is "/data/.bitcoin"
+  bitcoin_datadir: ".bitcoin"
 
   # The config dir is placed in the home directory of the linux_service_user
   config_dir: ".bitcoin"
@@ -39,17 +56,40 @@ bitcoin_node_vars:
   device_path: ""
   filesystem: ext4
 
+
 # Optional (disabled by default), requires functional full bitcoin node
 lightning_node_vars:
+  # Instruct the automation suite to proceed with a lightning installation.
+  # Set to "false" to skip the lightning installation. This could be useful if you only want to install a bitcoin node.
   enabled: False
+
+  # Instruct the automation to fully build and install lnd from source.
+  # This can be set to false if bitcoind+lnd are already installed and you don't want to rebuild.
   full_compile: True
-  install_golang: True  # set to 'False' if you want to use your own golang install at $GOPATH
+
+  # set to 'False' if you want to use an existing golang install at $GOPATH. Recommended only for advanced users.
+  install_golang: True
+
+  # update_systemd will install a systemd unit file for lnd. Strongly recommended for ease of use and auto startup.
   update_systemd: True
+
+  # This will template bitcoin.conf into config_dir which by default is "/home/bitcoin/.lnd/lnd.conf"
   template_lnd_conf: True
+
+  # Source code repository for lightning network daemon
   lightning_lnd_repo: "https://github.com/lightningnetwork/lnd"
+
+  # Version of lnd to install from lightning_lnd_repo.
+  # See available versions at https://github.com/lightningnetwork/lnd/tags
   lnd_git_tag: "v0.16.2-beta"
-  bitcoin_datadir: "/data/.bitcoin"
-  lnd_data_dir: "/data/.lnd"
+
+  # Where to store lightning data files.
+  data_root: "/data"
+
+  # The lnd_datadir will be placed inside data_root. Defaults to /data/.lnd (same filesystem as the bitcoin node)
+  lnd_datadir: ".lnd"
+
+  # The lnd_config_dir is placed into the home directory of the linux_service_user and holds static config files.
   lnd_config_dir: ".lnd"
 
 # Optional (disabled by default), requires functional lightning node

@@ -13,15 +13,19 @@
     group: "{{ linux_service_user }}"
     force: True
   loop:
-    - { "path": "{{ lightning_node_vars['lnd_data_dir'] }}", "state": "directory" }
-    - { "path": "{{ lightning_node_vars['lnd_data_dir'] }}/logs", "state": "directory" }
-    - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}", "state": "directory" }
-    - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}/lnd.conf", "state": "touch" }
+    - { "path": "{{ lightning_node_vars['data_root'] }}/{{ lightning_node_vars['lnd_data_dir'] }}",
+        "state": "directory" }
+    - { "path": "{{ lightning_node_vars['data_root'] }}/{{ lightning_node_vars['lnd_data_dir'] }}/logs",
+        "state": "directory" }
+    - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}",
+        "state": "directory" }
+    - { "path": "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}/lnd.conf",
+        "state": "touch" }
 
 - name: symlink ~/.lnd/data to lightning_node_vars.lnd_data_dir
   file:
     state: link
-    src: "{{ lightning_node_vars['lnd_data_dir'] }}"
+    src: "{{ lightning_node_vars['data_root'] }}/{{ lightning_node_vars['lnd_data_dir'] }}"
     dest: "/home/{{ linux_service_user }}/{{ lightning_node_vars['lnd_config_dir'] }}/data"
     owner: "{{ linux_service_user }}"
     group: "{{ linux_service_user }}"

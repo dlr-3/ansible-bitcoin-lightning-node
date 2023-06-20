@@ -9,3 +9,13 @@
       when: bitcoin_node_vars["enabled"] | default(False) | bool
       include_role:
         name: bitcoin_node
+
+    - name: Lightning node tasks
+      when: lightning_node_vars["enabled"] | default(False) | bool
+      include_role:
+        name: lightning_node
+
+    - name: Lightning addon tasks
+      when: lightning_addons_vars["enabled"] | default(False) | bool
+      include_role:
+        name: lightning_addons

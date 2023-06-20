@@ -7,7 +7,7 @@ Type=simple
 Restart=always
 User={{ linux_service_user }}
 ExecStart=/usr/local/bin/bitcoind \
-    -datadir={{ bitcoin_node_vars["data_root"] }}/.bitcoin \
+    -datadir={{ bitcoin_node_vars["data_root"] }}/{{ bitcoin_node_vars['config_dir'] }}\
     -conf={{ bitcoin_node_vars["config_dir"] }}/bitcoin.conf
 ExecStop=/usr/local/bin/bitcoin-cli -datadir={{ bitcoin_node_vars["data_root"] }}/.bitcoin stop
 PIDFile=/var/run/bitcoin/bitcoin.pid
