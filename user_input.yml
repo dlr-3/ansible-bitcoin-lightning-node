@@ -86,8 +86,8 @@ lightning_node_vars:
   # Where to store lightning data files.
   data_root: "/data"
 
-  # The lnd_datadir will be placed inside data_root. Defaults to /data/.lnd (same filesystem as the bitcoin node)
-  lnd_datadir: ".lnd"
+  # The lnd_data_dir will be placed inside data_root. Defaults to /data/.lnd (same filesystem as the bitcoin node)
+  lnd_data_dir: ".lnd"
 
   # The lnd_config_dir is placed into the home directory of the linux_service_user and holds static config files.
   lnd_config_dir: ".lnd"
