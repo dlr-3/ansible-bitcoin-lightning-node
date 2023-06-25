@@ -18,7 +18,8 @@
         url: "{{ debian_x86['golang']['source_url'] }}"
         checksum: "sha256:{{ debian_x86['golang']['sha256sum'] }}"
         dest: "/home/{{ linux_service_user }}/"
-        decompress: True
+        # decompress is only supported on ansible-2.14 which is not easily installed on ubuntu
+        # decompress: True
 
     - name: x86 build dependencies debian package install
       apt:
@@ -41,7 +42,8 @@
         url: "{{ debian_aarch64['golang']['source_url'] }}"
         checksum: "sha256:{{ debian_aarch64['golang']['sha256sum'] }}"
         dest: "/home/{{ linux_service_user }}"
-        decompress: True
+        # decompress is only supported on ansible-2.14 which is not easily installed on ubuntu
+        # decompress: True
 
     - name: aarch64 build dependencies debian package install
       apt:
