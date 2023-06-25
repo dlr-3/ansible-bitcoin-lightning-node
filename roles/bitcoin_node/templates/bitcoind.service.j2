@@ -11,7 +11,7 @@ ExecStart=/usr/local/bin/bitcoind \
     -conf=/home/{{ linux_service_user }}/{{ bitcoin_node_vars["config_dir"] }}/bitcoin.conf
 ExecStop=/usr/local/bin/bitcoin-cli \
     -datadir={{ bitcoin_node_vars["data_root"] }}/{{ bitcoin_node_vars["bitcoin_datadir"] }} stop
-PIDFile=/var/run/bitcoin/bitcoin.pid
+PIDFile=/run/bitcoin/bitcoin.pid
 
 [Install]
 WantedBy=multi-user.target
