@@ -32,7 +32,7 @@
 - name: aarch64 Debian-type OS prerequisites and LND compile pre-flight checks
   when:
     - ansible_os_family == 'Debian'
-    - ansible_architecture == 'x86_64'
+    - ansible_architecture == 'aarch64'
   block:
 
     - name: Download Go (golang)
