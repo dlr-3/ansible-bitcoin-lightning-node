@@ -11,9 +11,9 @@
     - ansible_architecture == 'x86_64'
   block:
 
-    - name: Download Go (golang)
+    - name: Download Go (golang) for debian x86
       when: lightning_node_vars['install_golang'] | bool
-      register: golang_download
+      register: golang_download_debian_x86
       get_url:
         url: "{{ debian_x86['golang']['source_url'] }}"
         checksum: "sha256:{{ debian_x86['golang']['sha256sum'] }}"
@@ -29,15 +29,29 @@
         install_recommends: True
       loop: "{{ debian_x86['basic_packages'] + debian_x86['lnd_compile_packages'] }}"
 
+    - name: Install Go (golang) for debian x86
+      when: lightning_node_vars['install_golang'] | bool
+      unarchive:
+        src: "{{ golang_download_debian_x86['dest'] }}"
+        dest: "/home/{{ linux_service_user }}"
+        owner: "{{ linux_service_user }}"
+        group: "{{ linux_service_user }}"
+
+    - name: remove golang_download archive after installing to GOPATH
+      file:
+        path: "{{ golang_download_debian_x86['dest'] }}"
+        state: absent
+        force: True
+
 - name: aarch64 Debian-type OS prerequisites and LND compile pre-flight checks
   when:
     - ansible_os_family == 'Debian'
     - ansible_architecture == 'aarch64'
   block:
 
-    - name: Download Go (golang)
+    - name: Download Go (golang) for debian aarch64
       when: lightning_node_vars['install_golang'] | bool
-      register: golang_download
+      register: golang_download_debian_aarch64
       get_url:
         url: "{{ debian_aarch64['golang']['source_url'] }}"
         checksum: "sha256:{{ debian_aarch64['golang']['sha256sum'] }}"
@@ -53,6 +67,20 @@
         install_recommends: True
       loop: "{{ debian_aarch64['basic_packages'] + debian_aarch64['lnd_compile_packages'] }}"
 
+    - name: Install Go (golang) for debian aarch64
+      when: lightning_node_vars['install_golang'] | bool
+      unarchive:
+        src: "{{ golang_download_debian_aarch64['dest'] }}"
+        dest: "/home/{{ linux_service_user }}"
+        owner: "{{ linux_service_user }}"
+        group: "{{ linux_service_user }}"
+
+    - name: remove golang_download archive after installing to GOPATH
+      file:
+        path: "{{ golang_download_debian_aarch64['dest'] }}"
+        state: absent
+        force: True
+
 
 - name: x86 RedHat-type OS prerequisites and LND compile pre-flight checks
   when:
@@ -60,9 +88,9 @@
     - ansible_architecture == 'x86_64'
   block:
 
-    - name: Download Go (golang)
+    - name: Download Go (golang) for redhat x86
       when: lightning_node_vars['install_golang'] | bool
-      register: golang_download
+      register: golang_download_redhat_x86
       get_url:
         url: "{{ redhat_x86['golang']['source_url'] }}"
         checksum: "sha256:{{ redhat_x86['golang']['sha256sum'] }}"
@@ -76,15 +104,19 @@
         state: present
       loop: "{{ redhat_x86['basic_packages'] +  redhat_x86['lnd_compile_packages'] }}"
 
+    - name: Install Go (golang) for redhat x86
+      when: lightning_node_vars['install_golang'] | bool
+      unarchive:
+        src: "{{ golang_download_redhat_x86['dest'] }}"
+        dest: "/home/{{ linux_service_user }}"
+        owner: "{{ linux_service_user }}"
+        group: "{{ linux_service_user }}"
 
-- name: Install Go (golang)
-  when: lightning_node_vars['install_golang'] | bool
-  register: golang_install
-  unarchive:
-    src: "{{ golang_download['dest'] }}"
-    dest: "/home/{{ linux_service_user }}"
-    owner: "{{ linux_service_user }}"
-    group: "{{ linux_service_user }}"
+    - name: remove golang_download archive after installing to GOPATH
+      file:
+        path: "{{ golang_download_redhat_x86['dest'] }}"
+        state: absent
+        force: True
 
 - name: Set GOPATH environment variable via .bashrc
   when: lightning_node_vars['install_golang'] | bool
@@ -98,9 +130,3 @@
   lineinfile:
     path: "/home/{{ linux_service_user }}/.bashrc"
     line: "export PATH=$PATH:$GOPATH/bin"
-
-- name: remove golang_download archive after installing to GOPATH
-  file:
-    path: "{{ golang_download['dest'] }}"
-    state: absent
-    force: True
