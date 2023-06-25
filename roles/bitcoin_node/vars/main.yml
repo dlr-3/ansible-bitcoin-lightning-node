@@ -28,6 +28,7 @@ debian_x86:
     - libminiupnpc-dev
     - libzmq3-dev
     - libsqlite3-dev
+    - libevent-dev
   btc_core_compile_packages:
     - build-essential
     - libtool
@@ -35,7 +36,6 @@ debian_x86:
     - automake
     - pkg-config
     - bsdmainutils
-    - libevent-dev
     - libboost-system-dev
     - libboost-filesystem-dev
     - libboost-test-dev
@@ -55,6 +55,7 @@ debian_aarch64:
     - libsqlite3-dev
     - libminiupnpc-dev
     - libzmq3-dev
+    - libevent-dev
   btc_core_compile_packages:
     - build-essential
     - libtool
@@ -62,7 +63,6 @@ debian_aarch64:
     - automake
     - pkg-config
     - bsdmainutils
-    - libevent-dev
     - libboost-system-dev
     - libboost-filesystem-dev
     - libboost-test-dev
