@@ -23,6 +23,7 @@ redhat_x86:
 debian_x86:
   basic_packages:
     - git
+    - acl
     - curl
     - python3
     - libminiupnpc-dev
@@ -50,6 +51,7 @@ debian_x86:
 debian_aarch64:
   basic_packages:
     - git
+    - acl
     - curl
     - python3
     - libsqlite3-dev

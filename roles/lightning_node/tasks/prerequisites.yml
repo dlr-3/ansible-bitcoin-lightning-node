@@ -34,8 +34,10 @@
       unarchive:
         src: "{{ golang_download_debian_x86['dest'] }}"
         dest: "/home/{{ linux_service_user }}"
+        remote_src: True
         owner: "{{ linux_service_user }}"
         group: "{{ linux_service_user }}"
+
 
     - name: remove golang_download archive after installing to GOPATH
       when: golang_download_debian_x86['changed'] | bool
@@ -57,6 +59,8 @@
         url: "{{ debian_aarch64['golang']['source_url'] }}"
         checksum: "sha256:{{ debian_aarch64['golang']['sha256sum'] }}"
         dest: "/home/{{ linux_service_user }}"
+        owner: "{{ linux_service_user }}"
+        group: "{{ linux_service_user }}"
         # decompress is only supported on ansible-2.14 which is not easily installed on ubuntu
         # decompress: True
 
@@ -73,6 +77,7 @@
       unarchive:
         src: "{{ golang_download_debian_aarch64['dest'] }}"
         dest: "/home/{{ linux_service_user }}"
+        remote_src: True
         owner: "{{ linux_service_user }}"
         group: "{{ linux_service_user }}"
 
@@ -111,6 +116,7 @@
       unarchive:
         src: "{{ golang_download_redhat_x86['dest'] }}"
         dest: "/home/{{ linux_service_user }}"
+        remote_src: True
         owner: "{{ linux_service_user }}"
         group: "{{ linux_service_user }}"
 
