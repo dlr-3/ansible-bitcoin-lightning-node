@@ -1,5 +1,5 @@
 ---
-# This software makes no attempt to delete BTC blockchain data, due to the long time required for recovering it via IBD
+# This software makes no attempt to delete BTC blockchain data, due to the long time required for recovering it.
 # If you have an old/corrupt/partial blockchain and you wish to "start fresh" with a complete IBD procedure
 # please consider manually removing the old blockchain data, or proceeding with the full reformat_device option.
 
@@ -91,8 +91,3 @@ lightning_node_vars:
 
   # The lnd_config_dir is placed into the home directory of the linux_service_user and holds static config files.
   lnd_config_dir: ".lnd"
-
-# Optional (disabled by default), requires functional lightning node
-lightning_addons_vars:
-  full_compile: True
-  enabled: False

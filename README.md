@@ -7,54 +7,53 @@
 + [Contributing](../CONTRIBUTING.md)
 
 ## About <a name = "about"></a>
-This project is meant to compile from source, install and run bitcoin core, lightning, on major linux OS/architectures
-Raspberry Pi 4 supported and tested! Rocky Linux, Debian, and more!
+This project is meant to compile from source, install and run bitcoin core and lightning, on x86 and arm64 architecture.
+Designed to match major linux distributions including CentOS/Rocky/Oracle, Debian, and Rasbian on Rasberry Pi 4.
 
-This project does not use docker or related technology. All software installed by this automation suite is downloaded and
-compiled from verified 3rd party sources wherever possible, and is intended to give full transparency and control to the
-bitcoin node operator.
+This project does not use docker or related technology. All software installed by this automation suite is configurable
+and compiles directly from source code wherever possible. This design is intended to give full transparency and control 
+to the node operator/developer.
 
 ## Getting Started <a name = "getting_started"></a>
 These instructions will get you a copy of the project up and running on your local machine.
 
-First, clone this repository onto the host that will run bitcoind, and run the `bash_install_ansible.sh` script
-
-```commandline
-    cd; mkdir -p git; cd git; \
-    git clone https://github.com/dlr-3/ansible-bitcoin-lightning-node.git; \
-    /bin/bash ansible-bitcoin-lightning-node/bash_install_ansible.sh
-```
 
 All users must enter some information into **user_input.yml** before deploying bitcoin and/or lightning
 
-The minimum required edits are as follows:
+The required updates for the minimum bitcoin node install are:
 
 1. update ```bitcoin_node_vars.node_rpc_username``` to a unique username value
 2. update ```bitcoin_node_vars.node_rpc_username``` to a unique password value
-3. edit data_root to point to your formatted and mounted file system which will contain the blockchain and related data
+3. edit ```bitcoin_node_vars.data_root``` to point to your formatted and mounted file system which will contain the blockchain and related data
 4. If you are planning to wipe and/or format a new device:
    1. change ```bitcoin_node_vars.reformat_device``` to "True"
    2. make sure data_root points to an empty or missing directory. The default of "/data" is fine as long as you do not have a file or directory by the same name already
-   3. WARNING: DATA LOSS -- set ```bitcoin_node_vars.device_path``` to the path of your device, such as /dev/sdd2. Any data on this device will be lost.
+   3. WARNING: DATA LOSS -- set ```bitcoin_node_vars.device_path``` to the path of your storage device. Any data on this device will be lost.
+   
+In order to enable the lightning node install, make the following edits to the user_input.yml file:
 
-Now, with these edits done, we are ready to deploy bitcoin. Copy and paste this to a terminal with root privilege:
+1. update ```lightning_node_vars.enabled``` to ```true```.
+2. recommended but not required to match the ```lightning_node_vars.data_root``` to ```bitcoin_node_vars.data_root```
 
-```commandline
-    ansible-playbook bitcoin_node.yml -K -i inventory.yml 
-```
+This software is designed to successfully compile and install bitcoin and lightning together in one attempt, but it will
+also work to install only a bitcoin node, or only install lightning on top of an existing running bitcoin node.
 
-That's it! if all goes well, bitcoin should be running with systemd under bitcoind.service 
+In the case that you already have a bitcoin node running, and only plan to install lightning on top:
+   
+1. set ```bitcoin_node_vars.enabled``` to ```false``` to prevent re-installing bitcoin.
+2. update ```lightning_node_vars.enabled``` to ```true```.
+3. update ```bitcoin_node_vars.node_rpc_username``` to your existing bitcoin RPC username value 
+4. update ```bitcoin_node_vars.node_rpc_username``` to your existing bitcoin RPC password value
 
-You can stop and disable it with ```sudo systemctl disable --now bitcoind``` 
+
+
 
 ### Prerequisites
-
 1. root access to supported Linux operating system (Debian, Ubuntu, Raspbian, Rocky, Oracle)
-2. mounted partition on said Linux OS with sufficient storage space to hold the ever-growing BTC blockchain data 
+2. available disk partition on your OS with enough space to hold the BTC blockchain data (1+ TB recommended)
 3. Stable internet connectivity
 
 OS/architecture Compatibility matrix:
-
 
 |                     | aarch64       | x86_64    |
 | :------------------ |:-------------:| :--------:|
@@ -62,27 +61,58 @@ OS/architecture Compatibility matrix:
 | Ubuntu 20           | supported     | supported |
 | Raspbian (Bullseye) | supported     |           |
 | Rocky Linux 8, 9    | supported     | supported |
-| Oracle Linux 8, 9   |               | supported |
 
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running.
 
-Install this repository from github as the root user (or your preferred sudo-user)
+As a user with root privilege, clone this repository onto the host that will run bitcoind, and run the 
+`bash_install_ansible.sh` script. This will install ansible locally so you can run the automated install yourself.
 
+If you already use ansible, or want to do a remote install on a managed computer, feel free to skip this step and modify
+inventory.yml according to your own environment.
+
+```commandline
+    cd; mkdir -p git; cd git; \
+    git clone https://github.com/dlr-3/ansible-bitcoin-lightning-node.git; \
+    /bin/bash ansible-bitcoin-lightning-node/bash_install_ansible.sh
 ```
-git clone https://www.github.com/dlr-3/this-repo-name.git
+
+Once you have configured user_input.yml to match your use case, copy and paste this to your terminal to begin:
+
+```commandline
+    ansible-playbook bitcoin_node.yml -K -i inventory.yml 
 ```
 
-Run the bash kick-starter script to install ansible
+This will ask for your password to run ansible with root privilege. This is necessary because this automation will
+create a user, install software packages, and manage firewallD and systemD.
 
+That's it! if all goes well, bitcoin should be running with systemd under bitcoind.service 
 
-```
-until finished
-```
+if lightning was installed, it will be running under lnd.service
 
-End with an example of getting some data out of the system or using it for a little demo.
+The systemd service can be checked via:
+
+```systemctl status bitcoind.service```
+
+and
+
+```systemctl status lnd.service```
+
+the bitcoin debug log will be found at:
+   ```{{ bitcoin_node_vars['data_root'] }}/{{ bitcoin_node_vars['config_dir'] }}/logs/debug.log```
+
+which, using default configuration, is the following file path:
+   ```/data/.bitcoin/logs/debug.log```
+   
+
 
 ## Usage <a name = "usage"></a>
 
-Add notes about how to use the system.
+with a newly running lightning node, you can create a wallet via:
+
+```lncli create```
+
+and learn more about using lncli via
+
+```lncli help```
