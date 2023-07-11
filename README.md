@@ -14,6 +14,22 @@ This project does not use docker or related technology. All software installed b
 and compiles directly from source code wherever possible. This design is intended to give full transparency and control 
 to the node operator/developer.
 
+
+### Prerequisites
+1. root access to supported Linux operating system (Debian, Ubuntu, Raspbian, Rocky, Oracle)
+2. available disk partition on your OS with enough space to hold the BTC blockchain data (1+ TB recommended)
+3. Stable internet connectivity
+
+OS/architecture Compatibility matrix:
+
+|                     | aarch64       | x86_64    |
+| :------------------ |:-------------:| :--------:|
+| Debian 11           | supported     | supported |
+| Ubuntu 20           | supported     | supported |
+| Raspbian (Bullseye) | supported     |           |
+| Rocky Linux 8, 9    | supported     | supported |
+
+
 ## Getting Started <a name = "getting_started"></a>
 These instructions will get you a copy of the project up and running on your local machine.
 
@@ -45,22 +61,6 @@ In the case that you already have a bitcoin node running, and only plan to insta
 3. update ```bitcoin_node_vars.node_rpc_username``` to your existing bitcoin RPC username value 
 4. update ```bitcoin_node_vars.node_rpc_username``` to your existing bitcoin RPC password value
 
-
-
-
-### Prerequisites
-1. root access to supported Linux operating system (Debian, Ubuntu, Raspbian, Rocky, Oracle)
-2. available disk partition on your OS with enough space to hold the BTC blockchain data (1+ TB recommended)
-3. Stable internet connectivity
-
-OS/architecture Compatibility matrix:
-
-|                     | aarch64       | x86_64    |
-| :------------------ |:-------------:| :--------:|
-| Debian 11           | supported     | supported |
-| Ubuntu 20           | supported     | supported |
-| Raspbian (Bullseye) | supported     |           |
-| Rocky Linux 8, 9    | supported     | supported |
 
 ### Installing
 
