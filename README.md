@@ -8,7 +8,7 @@
 
 ## About <a name = "about"></a>
 
-This project is meant to compile from source, install and run bitcoin core and lightning on x86 and arm64 architecture.
+This project is meant to compile from source, install and run bitcoin core and lnd on x86 and arm64 linux platforms.
 Designed to match major linux distributions including CentOS/Rocky/Oracle, Debian, and Rasbian on Rasberry Pi 4.
 
 This project does not use docker or related technology. All software installed by this automation suite is configurable
