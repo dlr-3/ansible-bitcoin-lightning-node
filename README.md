@@ -7,13 +7,17 @@
 + [Contributing](../CONTRIBUTING.md)
 
 ## About <a name = "about"></a>
-This project is meant to compile from source, install and run bitcoin core and lightning, on x86 and arm64 architecture.
+
+This project is meant to compile from source, install and run bitcoin core and lightning on x86 and arm64 architecture.
 Designed to match major linux distributions including CentOS/Rocky/Oracle, Debian, and Rasbian on Rasberry Pi 4.
 
 This project does not use docker or related technology. All software installed by this automation suite is configurable
 and compiles directly from source code wherever possible. This design is intended to give full transparency and control 
 to the node operator/developer.
 
+My motivation for this project was to provide a simple and straightforward, yet highly configurable method to compile
+and install bitcoin core and lightning without introducing any need to trust a third party (myself included!). These
+compile and installation steps were sourced from the bitcoin core and lightning repository documentation.
 
 ### Prerequisites
 1. root access to supported Linux operating system (Debian, Ubuntu, Raspbian, Rocky, Oracle)
@@ -64,8 +68,6 @@ In the case that you already have a bitcoin node running, and only plan to insta
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running.
-
 As a user with root privilege, clone this repository onto the host that will run bitcoind, and run the 
 `bash_install_ansible.sh` script. This will install ansible locally so you can run the automated install yourself.
 
@@ -89,30 +91,22 @@ create a user, install software packages, and manage firewallD and systemD.
 
 That's it! if all goes well, bitcoin should be running with systemd under bitcoind.service 
 
-if lightning was installed, it will be running under lnd.service
+if lightning was installed, it will be running under lnd.service. The systemd service(s) can be checked with systemctl
 
-The systemd service can be checked via:
+bitcoin systemd service: ```systemctl status bitcoind.service```
+lightning systemd service: ```systemctl status lnd.service```
 
-```systemctl status bitcoind.service```
+the bitcoin debug log will be found at: 
 
-and
+```{{ bitcoin_node_vars['data_root'] }}/{{ bitcoin_node_vars['config_dir'] }}/logs/debug.log```
 
-```systemctl status lnd.service```
-
-the bitcoin debug log will be found at:
-   ```{{ bitcoin_node_vars['data_root'] }}/{{ bitcoin_node_vars['config_dir'] }}/logs/debug.log```
-
-which, using default configuration, is the following file path:
-   ```/data/.bitcoin/logs/debug.log```
+which would be the following file path using default configuration:
+```/data/.bitcoin/logs/debug.log```
    
 
 
 ## Usage <a name = "usage"></a>
 
-with a newly running lightning node, you can create a wallet via:
+With a running lightning node, you can create a wallet with ```lncli create```
 
-```lncli create```
-
-and learn more about using lncli via
-
-```lncli help```
+Learn more about using lncli with ```lncli help```
